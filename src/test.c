@@ -1,5 +1,6 @@
 #include "uint8_array.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int main() {
     uint8_t items[4] = { 4, 3, 2, 1 };
