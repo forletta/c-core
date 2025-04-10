@@ -3,6 +3,7 @@
 #include "uint8_vector.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int main() {
     uint8_t items[4] = { 4, 3, 2, 1 };
@@ -12,7 +13,7 @@ int main() {
     };
 
     for (size_t i = 0; i < 4; i++) {
-        printf("%u", *Uint8Array_get(&arr, i));
+        printf("%u\n", *Uint8Array_get(&arr, i));
     }
 
     Uint8Vector v = {};
@@ -23,21 +24,29 @@ int main() {
 
     Uint8Vector_extend_from(&v, &arr);
 
-    AsciiString s = {};
+    AsciiString string = {};
 
-    AsciiString_push(&s, 'h');
-    AsciiString_push(&s, 'e');
-    AsciiString_push(&s, 'l');
-    AsciiString_push(&s, 'l');
-    AsciiString_push(&s, 'o');
+    AsciiString_push(&string, 'h');
+    AsciiString_push(&string, 'e');
+    AsciiString_push(&string, 'l');
+    AsciiString_push(&string, 'l');
+    AsciiString_push(&string, 'o');
 
-    printf("%s", s.str.str);
+    char *s = " there";
+    AsciiStr str = {
+        .str = s,
+        .len = strlen(s),
+    };
 
-    printf("%c", *AsciiString_get(&s, 1));
-    printf("%c", *AsciiString_get(&s, 3));
+    AsciiString_extend_from(&string, &str);
+
+    printf("%s\n", string.str.str);
+
+    printf("%c\n", *AsciiString_get(&string, 1));
+    printf("%c\n", *AsciiString_get(&string, 3));
 
     for (size_t i = 0; i < v.arr.len; i++) {
-        printf("%u", *Uint8Vector_get(&v, i));
+        printf("%u\n", *Uint8Vector_get(&v, i));
     }
     return 0;
 }

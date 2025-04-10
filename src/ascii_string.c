@@ -19,3 +19,14 @@ void AsciiString_push(AsciiString *str, char c) {
 
     str->str.str[str->str.len++] = c;
 }
+
+AsciiStr AsciiString_extend_from(AsciiString *str, AsciiStr *src) {
+    VoidArray void_slice = VoidVector_extend_from((VoidVector *)str, sizeof(char), (VoidArray *)src);
+
+    AsciiStr slice = {
+        .str = void_slice.arr,
+        .len = void_slice.len,
+    };
+
+    return slice;
+}

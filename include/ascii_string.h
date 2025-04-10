@@ -19,5 +19,6 @@ size_t AsciiString_reserve(AsciiString *str, size_t additional);
 
 char *AsciiString_get(AsciiString *str, size_t i);
 void AsciiString_push(AsciiString *str, char c);
+AsciiStr AsciiString_extend_from(AsciiString *str, AsciiStr *src);
 
 #endif // !ASCII_STRING_H
