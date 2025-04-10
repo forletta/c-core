@@ -12,6 +12,7 @@ size_t VoidVector_reserve(VoidVector *v, size_t element_size, size_t additional)
 size_t VoidVector_ensure_capacity(VoidVector *v, size_t element_size, size_t additional);
 
 void *VoidVector_get(VoidVector *v, size_t element_size, size_t i);
+VoidArray VoidVector_extend_from(VoidVector *v, size_t element_size, VoidArray *src);
 
 #endif // !VOID_VECTOR_H
 

@@ -21,6 +21,8 @@ int main() {
     Uint8Vector_push(&v, 2);
     Uint8Vector_push(&v, 3);
 
+    Uint8Vector_extend_from(&v, &arr);
+
     AsciiString s = {};
 
     AsciiString_push(&s, 'h');

@@ -22,7 +22,8 @@ size_t VoidVector_reserve(VoidVector *v, size_t element_size,
     return v->cap;
 }
 
-size_t VoidVector_ensure_capacity(VoidVector *v, size_t element_size, size_t additional) {
+size_t VoidVector_ensure_capacity(VoidVector *v, size_t element_size,
+                                  size_t additional) {
     if (v->arr.len < v->cap)
         return 0;
 
@@ -31,4 +32,19 @@ size_t VoidVector_ensure_capacity(VoidVector *v, size_t element_size, size_t add
 
 void *VoidVector_get(VoidVector *v, size_t element_size, size_t i) {
     return VoidArray_get(&v->arr, element_size, i);
+}
+
+VoidArray VoidVector_extend_from(VoidVector *v, size_t element_size,
+                                 VoidArray *src) {
+    VoidVector_ensure_capacity(v, element_size, src->len);
+
+    VoidArray slice = {
+        .arr = v->arr.arr + v->arr.len,
+        .len = src->len,
+    };
+
+    memcpy(v->arr.arr + v->arr.len, src->arr, src->len);
+    v->arr.len += src->len;
+
+    return slice;
 }
