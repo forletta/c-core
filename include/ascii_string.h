@@ -24,4 +24,7 @@ char *AsciiString_get(AsciiString *str, size_t i);
 void AsciiString_push(AsciiString *str, char c);
 AsciiStr AsciiString_extend_from(AsciiString *str, AsciiStr *src);
 
+void AsciiStr_free(AsciiStr *str);
+void AsciiString_free(AsciiString *str);
+
 #endif // !ASCII_STRING_H

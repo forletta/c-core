@@ -45,3 +45,11 @@ AsciiStr AsciiString_extend_from(AsciiString *str, AsciiStr *src) {
 
     return slice;
 }
+
+void AsciiStr_free(AsciiStr *str) {
+    VoidArray_free((VoidArray *)str);
+}
+
+void AsciiString_free(AsciiString *str) {
+    VoidVector_free((VoidVector *)str);
+}

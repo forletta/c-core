@@ -48,3 +48,9 @@ VoidArray VoidVector_extend_from(VoidVector *v, size_t element_size,
 
     return slice;
 }
+
+void VoidVector_free(VoidVector *v) {
+    VoidArray_free(&v->arr);
+
+    v->cap = 0;
+}

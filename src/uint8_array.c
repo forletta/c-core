@@ -4,3 +4,7 @@
 uint8_t *Uint8Array_get(Uint8Array *arr, size_t i) {
     return (uint8_t *)VoidArray_get((VoidArray *)arr, sizeof(uint8_t), i);
 }
+
+void Uint8Array_free(Uint8Array *arr) {
+    VoidArray_free((VoidArray *)arr);
+}

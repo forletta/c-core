@@ -29,3 +29,7 @@ Uint8Array Uint8Vector_extend_from(Uint8Vector *v, Uint8Array *src) {
     
     return slice;
 }
+
+void Uint8Vector_free(Uint8Vector *v) {
+    VoidVector_free((VoidVector *)v);
+}

@@ -44,5 +44,10 @@ int main() {
     for (size_t i = 0; i < v.arr.len; i++) {
         printf("%u\n", *Uint8Vector_get(&v, i));
     }
+
+    AsciiString_free(&string);
+    AsciiStr_free(&str);
+    Uint8Vector_free(&v);
+
     return 0;
 }

@@ -20,3 +20,9 @@ void *VoidArray_get(VoidArray *arr, size_t element_size, size_t i) {
 
     out_of_bounds();
 }
+
+void VoidArray_free(VoidArray *arr) {
+    free(arr->arr);
+
+    arr->len = 0;
+}
