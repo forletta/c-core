@@ -1,11 +1,8 @@
 #include "uint8_array.h"
-#include "c_core_error.h"
+#include "void_array.h"
 
 uint8_t *Uint8Array_get_ptr(Uint8Array *arr, size_t i) {
-    if (i < arr->len)
-        return arr->arr + i;
-
-    out_of_bounds();
+    return (uint8_t *)VoidArray_get_ptr((VoidArray *)arr, sizeof(uint8_t), i);
 }
 
 uint8_t Uint8Array_get(Uint8Array *arr, size_t i) {
