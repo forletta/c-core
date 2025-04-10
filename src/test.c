@@ -5,17 +5,15 @@
 #include <stdlib.h>
 
 int main() {
-    // uint8_t items[4] = { 4, 3, 2, 1 };
-    // Uint8Array arr = {
-    //     .arr = items,
-    //     .len = 4,
-    // };
-    //
-    // for (size_t i = 0; i < 4; i++) {
-    //     uint8_t n = Uint8Array_get(&arr, i);
-    //
-    //     printf("%u", n);
-    // }
+    uint8_t items[4] = { 4, 3, 2, 1 };
+    Uint8Array arr = {
+        .arr = items,
+        .len = 4,
+    };
+
+    for (size_t i = 0; i < 4; i++) {
+        printf("%u", *Uint8Array_get(&arr, i));
+    }
 
     Uint8Vector v = {};
 
@@ -33,8 +31,11 @@ int main() {
 
     printf("%s", s.str.str);
 
+    printf("%c", *AsciiString_get(&s, 1));
+    printf("%c", *AsciiString_get(&s, 3));
+
     for (size_t i = 0; i < v.arr.len; i++) {
-        printf("%u", Uint8Vector_get(&v, i));
+        printf("%u", *Uint8Vector_get(&v, i));
     }
     return 0;
 }

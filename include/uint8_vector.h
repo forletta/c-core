@@ -10,7 +10,7 @@ typedef struct {
 
 size_t Uint8Vector_reserve(Uint8Vector *v, size_t additional);
 
-uint8_t Uint8Vector_get(Uint8Vector *v, size_t i);
+uint8_t *Uint8Vector_get(Uint8Vector *v, size_t i);
 void Uint8Vector_push(Uint8Vector *v, uint8_t value);
 
 #endif // !UINT8_VECTOR_H

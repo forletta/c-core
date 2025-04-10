@@ -29,6 +29,6 @@ size_t VoidVector_ensure_capacity(VoidVector *v, size_t element_size, size_t add
     return VoidVector_reserve(v, element_size, additional);
 }
 
-void *VoidVector_get_ptr(VoidVector *v, size_t element_size, size_t i) {
-    return VoidArray_get_ptr(&v->arr, element_size, i);
+void *VoidVector_get(VoidVector *v, size_t element_size, size_t i) {
+    return VoidArray_get(&v->arr, element_size, i);
 }

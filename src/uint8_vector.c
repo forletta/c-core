@@ -8,7 +8,7 @@ size_t Uint8Vector_reserve(Uint8Vector *v, size_t additional) {
     return VoidVector_reserve((VoidVector *)v, sizeof(uint8_t), additional);
 }
 
-uint8_t Uint8Vector_get(Uint8Vector *v, size_t i) {
+uint8_t *Uint8Vector_get(Uint8Vector *v, size_t i) {
     return Uint8Array_get(&v->arr, i);
 }
 

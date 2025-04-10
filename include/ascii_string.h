@@ -13,10 +13,11 @@ typedef struct {
     size_t cap;
 } AsciiString;
 
-char *AsciiStr_get_ptr(AsciiStr *str, size_t i);
-char AsciiStr_get(AsciiStr *str, size_t i);
+char *AsciiStr_get(AsciiStr *str, size_t i);
 
 size_t AsciiString_reserve(AsciiString *str, size_t additional);
+
+char *AsciiString_get(AsciiString *str, size_t i);
 void AsciiString_push(AsciiString *str, char c);
 
 #endif // !ASCII_STRING_H

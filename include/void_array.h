@@ -9,6 +9,6 @@ typedef struct {
     size_t len;
 } VoidArray;
 
-void *VoidArray_get_ptr(VoidArray *arr, size_t element_size, size_t i);
+void *VoidArray_get(VoidArray *arr, size_t element_size, size_t i);
 
 #endif // !VOID_ARRAY_H
