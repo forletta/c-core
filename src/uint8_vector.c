@@ -15,6 +15,5 @@ uint8_t Uint8Vector_get(Uint8Vector *v, size_t i) {
 void Uint8Vector_push(Uint8Vector *v, uint8_t value) {
     VoidVector_ensure_capacity((VoidVector *)v, sizeof(uint8_t), 1);
 
-    v->arr.arr[v->arr.len] = value;
-    v->arr.len += 1;
+    v->arr.arr[v->arr.len++] = value;
 }
