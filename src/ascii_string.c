@@ -1,6 +1,21 @@
 #include "ascii_string.h"
 #include "void_array.h"
 #include "void_vector.h"
+#include <string.h>
+
+AsciiStr AsciiStr_copy(AsciiStr *str) {
+    VoidArray void_array = VoidArray_copy((VoidArray *)str, sizeof(char));
+    return *(AsciiStr *)&void_array;
+}
+
+AsciiStr AsciiStr_copy_from_cstr(char *cstr) {
+    AsciiStr str = {
+        .str = cstr,
+        .len = strlen(cstr),
+    };
+
+    return AsciiStr_copy(&str);
+}
 
 char *AsciiStr_get(AsciiStr *str, size_t i) {
     return (char *)VoidArray_get((VoidArray *)str, sizeof(char), i);

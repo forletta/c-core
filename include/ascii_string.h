@@ -13,6 +13,9 @@ typedef struct {
     size_t cap;
 } AsciiString;
 
+AsciiStr AsciiStr_copy(AsciiStr *str);
+AsciiStr AsciiStr_copy_from_cstr(char *str);
+
 char *AsciiStr_get(AsciiStr *str, size_t i);
 
 size_t AsciiString_reserve(AsciiString *str, size_t additional);

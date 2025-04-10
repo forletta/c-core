@@ -32,11 +32,7 @@ int main() {
     AsciiString_push(&string, 'l');
     AsciiString_push(&string, 'o');
 
-    char *s = " there";
-    AsciiStr str = {
-        .str = s,
-        .len = strlen(s),
-    };
+    AsciiStr str = AsciiStr_copy_from_cstr(" there");
 
     AsciiString_extend_from(&string, &str);
 
