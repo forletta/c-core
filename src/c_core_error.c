@@ -11,3 +11,10 @@ _Noreturn void out_of_bounds() {
 
     while (1);
 }
+
+_Noreturn void malloc_error() {
+    printf("\nERROR: allocation error\n");
+    fflush(stdin);
+
+    exit(1);
+}
