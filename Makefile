@@ -24,6 +24,11 @@ $(BUILD_DIR)/%.o: %.c $(BUILD_DIR)
 $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
 
+.PHONY: init
+init:
+	make clean
+	bear -- make test
+
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)
