@@ -1,4 +1,5 @@
 // #include "uint8_array.h"
+#include "ascii_string.h"
 #include "uint8_vector.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,6 +22,16 @@ int main() {
     Uint8Vector_push(&v, 1);
     Uint8Vector_push(&v, 2);
     Uint8Vector_push(&v, 3);
+
+    AsciiString s = {};
+
+    AsciiString_push(&s, 'h');
+    AsciiString_push(&s, 'e');
+    AsciiString_push(&s, 'l');
+    AsciiString_push(&s, 'l');
+    AsciiString_push(&s, 'o');
+
+    printf("%s", s.str.str);
 
     for (size_t i = 0; i < v.arr.len; i++) {
         printf("%u", Uint8Vector_get(&v, i));
