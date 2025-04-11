@@ -30,7 +30,7 @@ size_t VoidVector_ensure_capacity(VoidVector *v, size_t element_size,
     return VoidVector_reserve(v, element_size, additional);
 }
 
-const void *VoidVector_get(const VoidVector *v, size_t element_size, size_t i) {
+void *const VoidVector_get(const VoidVector *v, size_t element_size, size_t i) {
     return VoidArray_get(&v->arr, element_size, i);
 }
 

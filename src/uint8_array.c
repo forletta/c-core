@@ -1,8 +1,8 @@
 #include "uint8_array.h"
 #include "void_array.h"
 
-const uint8_t *Uint8Array_get(const Uint8Array *arr, size_t i) {
-    return (const uint8_t *)VoidArray_get((const VoidArray *)arr,
+uint8_t *const Uint8Array_get(const Uint8Array *arr, size_t i) {
+    return (uint8_t *const)VoidArray_get((const VoidArray *)arr,
                                           sizeof(uint8_t), i);
 }
 

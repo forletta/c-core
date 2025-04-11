@@ -10,7 +10,7 @@ typedef struct {
 
 size_t Uint8Vector_reserve(Uint8Vector *v, size_t additional);
 
-const uint8_t *Uint8Vector_get(const Uint8Vector *v, size_t i);
+uint8_t *const Uint8Vector_get(const Uint8Vector *v, size_t i);
 void Uint8Vector_push(Uint8Vector *v, uint8_t value);
 void Uint8Vector_extend_from(Uint8Vector *v, const Uint8Array *src);
 

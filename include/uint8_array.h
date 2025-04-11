@@ -9,7 +9,7 @@ typedef struct {
     size_t len;
 } Uint8Array;
 
-const uint8_t *Uint8Array_get(const Uint8Array *arr, size_t i);
+uint8_t *const Uint8Array_get(const Uint8Array *arr, size_t i);
 void Uint8Array_free(Uint8Array *arr);
 
 #endif // !UINT8_ARRAY_H_

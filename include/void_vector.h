@@ -13,7 +13,7 @@ size_t VoidVector_reserve(VoidVector *v, size_t element_size,
 size_t VoidVector_ensure_capacity(VoidVector *v, size_t element_size,
                                   size_t additional);
 
-const void *VoidVector_get(const VoidVector *v, size_t element_size, size_t i);
+void *const VoidVector_get(const VoidVector *v, size_t element_size, size_t i);
 void VoidVector_extend_from(VoidVector *v, size_t element_size,
                             const VoidArray *src);
 

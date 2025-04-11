@@ -26,13 +26,13 @@ AsciiStr AsciiStr_copy_from_cstr(const char *cstr) {
 
 // AsciiStr getters:
 
-const char *AsciiStr_get(const AsciiStr *str, size_t i) {
-    return (const char *)VoidArray_get((const VoidArray *)str, sizeof(char), i);
+char *const AsciiStr_get(const AsciiStr *str, size_t i) {
+    return (char *const)VoidArray_get((const VoidArray *)str, sizeof(char), i);
 }
 
 // AsciiString getters:
 
-const char *AsciiString_get(const AsciiString *str, size_t i) {
+char *const AsciiString_get(const AsciiString *str, size_t i) {
     return AsciiStr_get(&str->str, i);
 }
 

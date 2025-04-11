@@ -14,7 +14,7 @@ VoidArray VoidArray_copy(const VoidArray *arr, size_t element_size) {
     return new;
 }
 
-const void *VoidArray_get(const VoidArray *arr, size_t element_size, size_t i) {
+void *const VoidArray_get(const VoidArray *arr, size_t element_size, size_t i) {
     if (i < arr->len)
         return arr->arr + i;
 

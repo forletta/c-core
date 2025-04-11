@@ -19,10 +19,10 @@ AsciiStr AsciiStr_copy_from_cstr(const char *str);
 const AsciiStr AsciiStr_take_from_cstr(const char *str);
 
 // AsciiStr getters:
-const char *AsciiStr_get(const AsciiStr *str, size_t i);
+char *const AsciiStr_get(const AsciiStr *str, size_t i);
 
 // AsciiString getters:
-const char *AsciiString_get(const AsciiString *str, size_t i);
+char *const AsciiString_get(const AsciiString *str, size_t i);
 
 // AsciiString setters:
 size_t AsciiString_reserve(AsciiString *str, size_t additional);
