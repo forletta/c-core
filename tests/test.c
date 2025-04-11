@@ -46,8 +46,12 @@ int main() {
         printf("%u\n", *Uint8Vector_get(&v, i));
     }
 
+    AsciiString_free(&string);
+
     io_getline(&string, stdin);
-    printf("%.*s", (int)string.str.len, string.str.str);
+    printf("%.*s\n", (int)string.str.len, string.str.str);
+
+    printf("len: %zu\ncap: %zu\n", string.str.len, string.cap);
 
     AsciiString_free(&string);
     AsciiStr_free(&str);
