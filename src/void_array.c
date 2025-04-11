@@ -23,6 +23,7 @@ void *VoidArray_get(VoidArray *arr, size_t element_size, size_t i) {
 
 void VoidArray_free(VoidArray *arr) {
     free(arr->arr);
+    arr->arr = NULL;
 
     arr->len = 0;
 }
