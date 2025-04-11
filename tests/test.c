@@ -7,7 +7,7 @@
 #include <string.h>
 
 int main() {
-    uint8_t items[4] = { 4, 3, 2, 1 };
+    uint8_t items[4] = {4, 3, 2, 1};
     Uint8Array arr = {
         .arr = items,
         .len = 4,
@@ -34,6 +34,12 @@ int main() {
     AsciiString_push(&string, 'o');
 
     AsciiStr str = AsciiStr_copy_from_cstr(" there");
+
+    AsciiStr substr = AsciiStr_substr(&str, 1, 3);
+    printf("%.*s\n", (int)substr.len, substr.str);
+
+    substr = AsciiString_substr(&string, 1, 3);
+    printf("%.*s\n", (int)substr.len, substr.str);
 
     AsciiString_extend_from(&string, &str);
 

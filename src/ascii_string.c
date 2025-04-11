@@ -1,4 +1,5 @@
 #include "ascii_string.h"
+#include "c_core_error.h"
 #include "void_array.h"
 #include "void_vector.h"
 #include <stdlib.h>
@@ -30,10 +31,40 @@ char *const AsciiStr_get(const AsciiStr *str, size_t i) {
     return (char *const)VoidArray_get((const VoidArray *)str, sizeof(char), i);
 }
 
+const AsciiStr AsciiStr_substr(const AsciiStr *str, size_t start, size_t end) {
+    AsciiStr substr = {};
+
+    if (start >= str->len || end > str->len)
+        out_of_bounds();
+
+    if (start >= end)
+        return substr;
+
+    substr.str = AsciiStr_get(str, start);
+    substr.len = end - start;
+
+    return substr;
+}
+
 // AsciiString getters:
 
 char *const AsciiString_get(const AsciiString *str, size_t i) {
     return AsciiStr_get(&str->str, i);
+}
+
+const AsciiStr AsciiString_substr(const AsciiString *str, size_t start, size_t end) {
+    AsciiStr substr = {};
+
+    if (start >= str->str.len || end > str->str.len)
+        out_of_bounds();
+
+    if (start >= end)
+        return substr;
+
+    substr.str = AsciiString_get(str, start);
+    substr.len = end - start;
+
+    return substr;
 }
 
 // AsciiString setters:

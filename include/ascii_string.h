@@ -20,9 +20,11 @@ const AsciiStr AsciiStr_take_from_cstr(const char *str);
 
 // AsciiStr getters:
 char *const AsciiStr_get(const AsciiStr *str, size_t i);
+const AsciiStr AsciiStr_substr(const AsciiStr *str, size_t start, size_t end);
 
 // AsciiString getters:
 char *const AsciiString_get(const AsciiString *str, size_t i);
+const AsciiStr AsciiString_substr(const AsciiString *str, size_t start, size_t end);
 
 // AsciiString setters:
 size_t AsciiString_reserve(AsciiString *str, size_t additional);
