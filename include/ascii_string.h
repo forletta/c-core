@@ -13,18 +13,23 @@ typedef struct {
     size_t cap;
 } AsciiString;
 
+// AsciiStr constructors:
 AsciiStr AsciiStr_copy(const AsciiStr *str);
 AsciiStr AsciiStr_copy_from_cstr(const char *str);
 const AsciiStr AsciiStr_take_from_cstr(const char *str);
 
+// AsciiStr getters:
 const char *AsciiStr_get(const AsciiStr *str, size_t i);
 
-size_t AsciiString_reserve(AsciiString *str, size_t additional);
-
+// AsciiString getters:
 const char *AsciiString_get(const AsciiString *str, size_t i);
+
+// AsciiString setters:
+size_t AsciiString_reserve(AsciiString *str, size_t additional);
 void AsciiString_push(AsciiString *str, char c);
 void AsciiString_extend_from(AsciiString *str, const AsciiStr *src);
 
+// Destructors:
 void AsciiStr_free(AsciiStr *str);
 void AsciiString_free(AsciiString *str);
 
