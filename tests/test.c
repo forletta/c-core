@@ -1,5 +1,6 @@
 // #include "uint8_array.h"
 #include "ascii_string.h"
+#include "io.h"
 #include "uint8_vector.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,6 +45,9 @@ int main() {
     for (size_t i = 0; i < v.arr.len; i++) {
         printf("%u\n", *Uint8Vector_get(&v, i));
     }
+
+    io_getline(&string, stdin);
+    printf("%.*s", (int)string.str.len, string.str.str);
 
     AsciiString_free(&string);
     AsciiStr_free(&str);
