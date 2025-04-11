@@ -9,8 +9,8 @@ typedef struct {
     size_t len;
 } VoidArray;
 
-VoidArray VoidArray_copy(VoidArray *arr, size_t element_size);
-void *VoidArray_get(VoidArray *arr, size_t element_size, size_t i);
+VoidArray VoidArray_copy(const VoidArray *arr, size_t element_size);
+const void *VoidArray_get(const VoidArray *arr, size_t element_size, size_t i);
 
 void VoidArray_free(VoidArray *arr);
 

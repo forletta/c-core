@@ -1,31 +1,36 @@
 #include "ascii_string.h"
 #include "void_array.h"
 #include "void_vector.h"
+#include <stdlib.h>
 #include <string.h>
 
-AsciiStr AsciiStr_copy(AsciiStr *str) {
+AsciiStr AsciiStr_copy(const AsciiStr *str) {
     VoidArray void_array = VoidArray_copy((VoidArray *)str, sizeof(char));
     return *(AsciiStr *)&void_array;
 }
 
-AsciiStr AsciiStr_copy_from_cstr(char *cstr) {
+AsciiStr AsciiStr_copy_from_cstr(const char *cstr) {
+    size_t len = strlen(cstr);
+    char *ptr = malloc(len);
+    memcpy(ptr, cstr, len);
+
     AsciiStr str = {
-        .str = cstr,
-        .len = strlen(cstr),
+        .str = ptr,
+        .len = len,
     };
 
-    return AsciiStr_copy(&str);
+    return str;
 }
 
-char *AsciiStr_get(AsciiStr *str, size_t i) {
-    return (char *)VoidArray_get((VoidArray *)str, sizeof(char), i);
+const char *AsciiStr_get(const AsciiStr *str, size_t i) {
+    return (const char *)VoidArray_get((const VoidArray *)str, sizeof(char), i);
 }
 
 size_t AsciiString_reserve(AsciiString *str, size_t additional) {
     return VoidVector_reserve((VoidVector *)str, sizeof(char), additional);
 }
 
-char *AsciiString_get(AsciiString *str, size_t i) {
+const char *AsciiString_get(const AsciiString *str, size_t i) {
     return AsciiStr_get(&str->str, i);
 }
 
@@ -35,21 +40,10 @@ void AsciiString_push(AsciiString *str, char c) {
     str->str.str[str->str.len++] = c;
 }
 
-AsciiStr AsciiString_extend_from(AsciiString *str, AsciiStr *src) {
-    VoidArray void_slice = VoidVector_extend_from((VoidVector *)str, sizeof(char), (VoidArray *)src);
-
-    AsciiStr slice = {
-        .str = void_slice.arr,
-        .len = void_slice.len,
-    };
-
-    return slice;
+void AsciiString_extend_from(AsciiString *str, const AsciiStr *src) {
+    VoidVector_extend_from((VoidVector *)str, sizeof(char), (VoidArray *)src);
 }
 
-void AsciiStr_free(AsciiStr *str) {
-    VoidArray_free((VoidArray *)str);
-}
+void AsciiStr_free(AsciiStr *str) { VoidArray_free((VoidArray *)str); }
 
-void AsciiString_free(AsciiString *str) {
-    VoidVector_free((VoidVector *)str);
-}
+void AsciiString_free(AsciiString *str) { VoidVector_free((VoidVector *)str); }

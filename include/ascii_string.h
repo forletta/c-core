@@ -13,16 +13,17 @@ typedef struct {
     size_t cap;
 } AsciiString;
 
-AsciiStr AsciiStr_copy(AsciiStr *str);
-AsciiStr AsciiStr_copy_from_cstr(char *str);
+AsciiStr AsciiStr_copy(const AsciiStr *str);
+AsciiStr AsciiStr_copy_from_cstr(const char *str);
+const AsciiStr AsciiStr_take_from_cstr(const char *str);
 
-char *AsciiStr_get(AsciiStr *str, size_t i);
+const char *AsciiStr_get(const AsciiStr *str, size_t i);
 
 size_t AsciiString_reserve(AsciiString *str, size_t additional);
 
-char *AsciiString_get(AsciiString *str, size_t i);
+const char *AsciiString_get(const AsciiString *str, size_t i);
 void AsciiString_push(AsciiString *str, char c);
-AsciiStr AsciiString_extend_from(AsciiString *str, AsciiStr *src);
+void AsciiString_extend_from(AsciiString *str, const AsciiStr *src);
 
 void AsciiStr_free(AsciiStr *str);
 void AsciiString_free(AsciiString *str);

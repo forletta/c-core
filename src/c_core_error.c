@@ -9,7 +9,8 @@ _Noreturn void out_of_bounds() {
 
     raise(SIGTRAP);
 
-    while (1);
+    while (1)
+        ;
 }
 
 _Noreturn void malloc_error() {
