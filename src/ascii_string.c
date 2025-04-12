@@ -7,12 +7,12 @@
 
 // AsciiStr constructors:
 
-AsciiStr AsciiStr_copy(const AsciiStr *str) {
+AsciiStr AsciiStr_copy(AsciiStr *str) {
     VoidArray void_array = VoidArray_copy((VoidArray *)str, sizeof(char));
     return *(AsciiStr *)&void_array;
 }
 
-AsciiStr AsciiStr_copy_from_cstr(const char *cstr) {
+AsciiStr AsciiStr_copy_from_cstr(char *cstr) {
     size_t len = strlen(cstr);
     char *ptr = malloc(len);
     memcpy(ptr, cstr, len);
@@ -27,14 +27,14 @@ AsciiStr AsciiStr_copy_from_cstr(const char *cstr) {
 
 // AsciiStr getters:
 
-char *const AsciiStr_get(const AsciiStr *str, size_t i) {
+char *AsciiStr_get(AsciiStr *str, size_t i) {
     if (i < str->len)
         return str->ptr + i;
 
     out_of_bounds();
 }
 
-AsciiStr AsciiStr_substr(const AsciiStr *str, size_t start, size_t end) {
+AsciiStr AsciiStr_substr(AsciiStr *str, size_t start, size_t end) {
     if (start >= str->len || end > str->len)
         out_of_bounds();
 
@@ -53,14 +53,14 @@ AsciiStr AsciiStr_substr(const AsciiStr *str, size_t start, size_t end) {
 
 // AsciiString getters:
 
-char *const AsciiString_get(const AsciiString *str, size_t i) {
+char *AsciiString_get(AsciiString *str, size_t i) {
     if (i < str->len)
         return str->ptr + i;
 
     out_of_bounds();
 }
 
-AsciiStr AsciiString_substr(const AsciiString *str, size_t start, size_t end) {
+AsciiStr AsciiString_substr(AsciiString *str, size_t start, size_t end) {
     if (start >= str->len || end > str->len)
         out_of_bounds();
 
@@ -85,7 +85,7 @@ void AsciiString_push(AsciiString *str, char c) {
     str->ptr[str->len++] = c;
 }
 
-void AsciiString_extend_from(AsciiString *str, const AsciiStr *src) {
+void AsciiString_extend_from(AsciiString *str, AsciiStr *src) {
     VoidVector_extend_from((VoidVector *)str, sizeof(char), (VoidArray *)src);
 }
 

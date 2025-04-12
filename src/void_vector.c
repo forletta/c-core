@@ -30,7 +30,7 @@ size_t VoidVector_ensure_capacity(VoidVector *v, size_t element_size,
     return VoidVector_reserve(v, element_size, additional);
 }
 
-void *const VoidVector_get(const VoidVector *v, size_t element_size, size_t i) {
+void *VoidVector_get(VoidVector *v, size_t element_size, size_t i) {
     if (i < v->len)
         return v->ptr + i;
 
@@ -38,7 +38,7 @@ void *const VoidVector_get(const VoidVector *v, size_t element_size, size_t i) {
 }
 
 void VoidVector_extend_from(VoidVector *v, size_t element_size,
-                            const VoidArray *src) {
+                            VoidArray *src) {
     VoidVector_ensure_capacity(v, element_size, src->len);
 
     memcpy(v->ptr + v->len, src->ptr, src->len);
