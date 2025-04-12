@@ -25,6 +25,7 @@ AsciiStr AsciiStr_substr(AsciiStr *str, size_t start, size_t end);
 
 // AsciiString getters:
 char *AsciiString_get(AsciiString *str, size_t i);
+AsciiStr AsciiString_asstr(AsciiString *str);
 AsciiStr AsciiString_substr(AsciiString *str, size_t start, size_t end);
 
 // AsciiString setters:

@@ -60,6 +60,15 @@ char *AsciiString_get(AsciiString *str, size_t i) {
     out_of_bounds();
 }
 
+AsciiStr AsciiString_asstr(AsciiString *str) {
+    AsciiStr s = {
+        .ptr = str->ptr,
+        .len = str->len,
+    };
+
+    return s;
+}
+
 AsciiStr AsciiString_substr(AsciiString *str, size_t start, size_t end) {
     if (start >= str->len || end > str->len)
         out_of_bounds();
