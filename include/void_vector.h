@@ -4,7 +4,8 @@
 #include "void_array.h"
 
 typedef struct {
-    VoidArray arr;
+    void *ptr;
+    size_t len;
     size_t cap;
 } VoidVector;
 

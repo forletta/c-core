@@ -3,27 +3,25 @@
 #include <stdlib.h>
 #include <string.h>
 
-VoidArray VoidArray_copy(const VoidArray *arr, size_t element_size) {
-    VoidArray new = {.len = arr->len};
+VoidArray VoidArray_copy(VoidArray *arr, size_t element_size) {
+    void *ptr;
 
-    if ((new.arr = malloc(arr->len * element_size)) == NULL)
+    if ((ptr = malloc(arr->len * element_size)) == NULL)
         malloc_error();
 
-    memcpy(new.arr, arr->arr, arr->len);
+    memcpy(ptr, arr->ptr, arr->len * element_size);
+
+    VoidArray new = {
+        .ptr = ptr,
+        .len = arr->len,
+    };
 
     return new;
 }
 
-void *const VoidArray_get(const VoidArray *arr, size_t element_size, size_t i) {
+void *const VoidArray_get(VoidArray *arr, size_t element_size, size_t i) {
     if (i < arr->len)
-        return arr->arr + i;
+        return arr->ptr + i;
 
     out_of_bounds();
-}
-
-void VoidArray_free(VoidArray *arr) {
-    free(arr->arr);
-    arr->arr = NULL;
-
-    arr->len = 0;
 }

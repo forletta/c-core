@@ -14,9 +14,9 @@ size_t VoidVector_reserve(VoidVector *v, size_t element_size,
     if ((ptr = malloc(required_capacity * element_size)) == NULL)
         malloc_error();
 
-    memcpy(ptr, v->arr.arr, v->arr.len);
-    free(v->arr.arr);
-    v->arr.arr = ptr;
+    memcpy(ptr, v->ptr, v->len);
+    free(v->ptr);
+    v->ptr = ptr;
     v->cap = required_capacity;
 
     return v->cap;
@@ -24,26 +24,31 @@ size_t VoidVector_reserve(VoidVector *v, size_t element_size,
 
 size_t VoidVector_ensure_capacity(VoidVector *v, size_t element_size,
                                   size_t additional) {
-    if (v->arr.len < v->cap)
+    if (v->len < v->cap)
         return 0;
 
     return VoidVector_reserve(v, element_size, additional);
 }
 
 void *const VoidVector_get(const VoidVector *v, size_t element_size, size_t i) {
-    return VoidArray_get(&v->arr, element_size, i);
+    if (i < v->len)
+        return v->ptr + i;
+
+    out_of_bounds();
 }
 
 void VoidVector_extend_from(VoidVector *v, size_t element_size,
                             const VoidArray *src) {
     VoidVector_ensure_capacity(v, element_size, src->len);
 
-    memcpy(v->arr.arr + v->arr.len, src->arr, src->len);
-    v->arr.len += src->len;
+    memcpy(v->ptr + v->len, src->ptr, src->len);
+    v->len += src->len;
 }
 
 void VoidVector_free(VoidVector *v) {
-    VoidArray_free(&v->arr);
+    free(v->ptr);
 
+    v->ptr = NULL;
+    v->len = 0;
     v->cap = 0;
 }

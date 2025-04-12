@@ -18,7 +18,7 @@ AsciiStr AsciiStr_copy_from_cstr(const char *cstr) {
     memcpy(ptr, cstr, len);
 
     AsciiStr str = {
-        .str = ptr,
+        .ptr = ptr,
         .len = len,
     };
 
@@ -28,20 +28,25 @@ AsciiStr AsciiStr_copy_from_cstr(const char *cstr) {
 // AsciiStr getters:
 
 char *const AsciiStr_get(const AsciiStr *str, size_t i) {
-    return (char *const)VoidArray_get((const VoidArray *)str, sizeof(char), i);
+    if (i < str->len)
+        return str->ptr + i;
+
+    out_of_bounds();
 }
 
-const AsciiStr AsciiStr_substr(const AsciiStr *str, size_t start, size_t end) {
-    AsciiStr substr = {};
-
+AsciiStr AsciiStr_substr(const AsciiStr *str, size_t start, size_t end) {
     if (start >= str->len || end > str->len)
         out_of_bounds();
 
-    if (start >= end)
+    if (start >= end) {
+        AsciiStr substr = {};
         return substr;
+    }
 
-    substr.str = AsciiStr_get(str, start);
-    substr.len = end - start;
+    AsciiStr substr = {
+        .ptr = AsciiStr_get(str, start),
+        .len = end - start,
+    };
 
     return substr;
 }
@@ -49,20 +54,25 @@ const AsciiStr AsciiStr_substr(const AsciiStr *str, size_t start, size_t end) {
 // AsciiString getters:
 
 char *const AsciiString_get(const AsciiString *str, size_t i) {
-    return AsciiStr_get(&str->str, i);
+    if (i < str->len)
+        return str->ptr + i;
+
+    out_of_bounds();
 }
 
-const AsciiStr AsciiString_substr(const AsciiString *str, size_t start, size_t end) {
-    AsciiStr substr = {};
-
-    if (start >= str->str.len || end > str->str.len)
+AsciiStr AsciiString_substr(const AsciiString *str, size_t start, size_t end) {
+    if (start >= str->len || end > str->len)
         out_of_bounds();
 
-    if (start >= end)
+    if (start >= end) {
+        AsciiStr substr = {};
         return substr;
+    }
 
-    substr.str = AsciiString_get(str, start);
-    substr.len = end - start;
+    AsciiStr substr = {
+        .ptr = AsciiString_get(str, start),
+        .len = end - start,
+    };
 
     return substr;
 }
@@ -72,7 +82,7 @@ const AsciiStr AsciiString_substr(const AsciiString *str, size_t start, size_t e
 void AsciiString_push(AsciiString *str, char c) {
     VoidVector_ensure_capacity((VoidVector *)str, sizeof(char), 1);
 
-    str->str.str[str->str.len++] = c;
+    str->ptr[str->len++] = c;
 }
 
 void AsciiString_extend_from(AsciiString *str, const AsciiStr *src) {
@@ -83,8 +93,6 @@ size_t AsciiString_reserve(AsciiString *str, size_t additional) {
     return VoidVector_reserve((VoidVector *)str, sizeof(char), additional);
 }
 
-// Destructors:
-
-void AsciiStr_free(AsciiStr *str) { VoidArray_free((VoidArray *)str); }
+// AsciiString destructors:
 
 void AsciiString_free(AsciiString *str) { VoidVector_free((VoidVector *)str); }
