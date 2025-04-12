@@ -27,7 +27,7 @@ AsciiStr AsciiStr_copy_from_cstr(char *cstr) {
 
 // AsciiStr getters:
 
-char *AsciiStr_get(AsciiStr *str, size_t i) {
+char *AsciiStr_get(const AsciiStr *str, size_t i) {
     if (i < str->len)
         return str->ptr + i;
 
@@ -53,7 +53,7 @@ AsciiStr AsciiStr_substr(AsciiStr *str, size_t start, size_t end) {
 
 // AsciiString getters:
 
-char *AsciiString_get(AsciiString *str, size_t i) {
+char *AsciiString_get(const AsciiString *str, size_t i) {
     if (i < str->len)
         return str->ptr + i;
 
