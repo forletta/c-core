@@ -14,7 +14,7 @@ size_t VoidVector_reserve(VoidVector *v, size_t element_size,
     if ((ptr = malloc(required_capacity * element_size)) == NULL)
         malloc_error();
 
-    memcpy(ptr, v->ptr, v->len);
+    memcpy(ptr, v->ptr, v->len * element_size);
     free(v->ptr);
     v->ptr = ptr;
     v->cap = required_capacity;
