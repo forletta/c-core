@@ -3,6 +3,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+VoidVector VoidVector_copy(VoidVector *v, size_t element_size) {
+    VoidArray arr = {.ptr = v->ptr, .len = v->len};
+    VoidArray new_arr = VoidArray_copy(&arr, element_size);
+
+    VoidVector new = {
+        .ptr = new_arr.ptr, .len = new_arr.len, .cap = new_arr.len};
+
+    return new;
+}
+
 size_t VoidVector_reserve(VoidVector *v, size_t element_size,
                           size_t additional) {
     if (additional == 0)

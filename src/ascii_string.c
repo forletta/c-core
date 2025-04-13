@@ -25,6 +25,15 @@ AsciiStr AsciiStr_copy_from_cstr(char *cstr) {
     return str;
 }
 
+AsciiStr AsciiStr_take_from_cstr(char *cstr) {
+    AsciiStr str = {
+        .ptr = cstr,
+        .len = strlen(cstr),
+    };
+
+    return str;
+}
+
 // AsciiStr getters:
 
 char *AsciiStr_get(const AsciiStr *str, size_t i) {
@@ -49,6 +58,35 @@ AsciiStr AsciiStr_substr(AsciiStr *str, size_t start, size_t end) {
     };
 
     return substr;
+}
+
+// AsciiStr constructors:
+AsciiString AsciiString_copy(AsciiString *str) {
+    VoidVector void_vector = VoidVector_copy((VoidVector *)str, sizeof(char));
+
+    return *(AsciiString *)&void_vector;
+}
+
+AsciiString AsciiString_copy_from_str(AsciiStr *str) {
+    return AsciiString_take_from_str(AsciiStr_copy(str));
+}
+
+AsciiString AsciiString_take_from_str(AsciiStr str) {
+    AsciiString string = {
+        .ptr = str.ptr,
+        .len = str.len,
+        .cap = str.len,
+    };
+
+    return string;
+}
+
+AsciiString AsciiString_copy_from_cstr(char *str) {
+    return AsciiString_take_from_str(AsciiStr_copy_from_cstr(str));
+}
+
+AsciiString AsciiString_take_from_cstr(char *str) {
+    return AsciiString_take_from_str(AsciiStr_take_from_cstr(str));
 }
 
 // AsciiString getters:

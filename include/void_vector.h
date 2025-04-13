@@ -9,6 +9,8 @@ typedef struct {
     size_t cap;
 } VoidVector;
 
+VoidVector VoidVector_copy(VoidVector *v, size_t element_size);
+
 size_t VoidVector_reserve(VoidVector *v, size_t element_size,
                           size_t additional);
 size_t VoidVector_ensure_capacity(VoidVector *v, size_t element_size,

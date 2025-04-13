@@ -64,9 +64,9 @@ int main() {
     AsciiStringVector v = {};
 
     for (size_t i = 0; i < 4; i++) {
-        AsciiStr str = AsciiStr_copy_from_cstr("heyyy");
-        AsciiString s = {};
-        AsciiString_extend_from(&s, &str);
+        // AsciiStr str = AsciiStr_copy_from_cstr("heyyy");
+        AsciiString s = AsciiString_copy_from_cstr("heyyy");
+        // AsciiString_extend_from(&s, &str);
     
         AsciiStringVector_push(&v, &s);
     }

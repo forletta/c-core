@@ -29,6 +29,13 @@ AsciiStr AsciiStr_take_from_cstr(char *str);
 char *AsciiStr_get(const AsciiStr *str, size_t i);
 AsciiStr AsciiStr_substr(AsciiStr *str, size_t start, size_t end);
 
+// AsciiStr constructors:
+AsciiString AsciiString_copy(AsciiString *str);
+AsciiString AsciiString_copy_from_str(AsciiStr *str);
+AsciiString AsciiString_take_from_str(AsciiStr str);
+AsciiString AsciiString_copy_from_cstr(char *str);
+AsciiString AsciiString_take_from_cstr(char *str);
+
 // AsciiString getters:
 char *AsciiString_get(const AsciiString *str, size_t i);
 AsciiStr AsciiString_asstr(AsciiString *str);
