@@ -14,6 +14,12 @@ typedef struct {
     size_t cap;
 } AsciiString;
 
+typedef struct {
+    AsciiString *ptr;
+    size_t len;
+    size_t cap;
+} AsciiStringVector;
+
 // AsciiStr constructors:
 AsciiStr AsciiStr_copy(AsciiStr *str);
 AsciiStr AsciiStr_copy_from_cstr(char *str);
@@ -35,5 +41,10 @@ void AsciiString_extend_from(AsciiString *str, AsciiStr *src);
 
 // AsciiString destructors:
 void AsciiString_free(AsciiString *str);
+
+// AsciiStringVector:
+AsciiString *AsciiStringVector_get(const AsciiStringVector *v, size_t i);
+void AsciiStringVector_push(AsciiStringVector *v, AsciiString *str);
+void AsciiStringVector_free(AsciiStringVector *v);
 
 #endif // !ASCII_STRING_H

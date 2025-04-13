@@ -105,3 +105,26 @@ size_t AsciiString_reserve(AsciiString *str, size_t additional) {
 // AsciiString destructors:
 
 void AsciiString_free(AsciiString *str) { VoidVector_free((VoidVector *)str); }
+
+// AsciiStringVector:
+
+AsciiString *AsciiStringVector_get(const AsciiStringVector *v, size_t i) {
+    if (i < v->len)
+        return v->ptr + i;
+
+    out_of_bounds();
+}
+
+void AsciiStringVector_push(AsciiStringVector *v, AsciiString *str) {
+    VoidVector_ensure_capacity((VoidVector *)v, sizeof(AsciiString), 1);
+
+    v->ptr[v->len++] = *str;
+}
+
+void AsciiStringVector_free(AsciiStringVector *v) {
+    for (size_t i = 0; i < v->len; i++) {
+        AsciiString_free(AsciiStringVector_get(v, i));
+    }
+
+    VoidVector_free((VoidVector *)v);
+}

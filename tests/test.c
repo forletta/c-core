@@ -60,6 +60,25 @@ int main() {
     printf("len: %zu\ncap: %zu\n", string.len, string.cap);
 
     AsciiString_free(&string);
+
+    AsciiStringVector v = {};
+
+    for (size_t i = 0; i < 4; i++) {
+        AsciiStr str = AsciiStr_copy_from_cstr("heyyy");
+        AsciiString s = {};
+        AsciiString_extend_from(&s, &str);
+    
+        AsciiStringVector_push(&v, &s);
+    }
+
+    for (size_t i = 0; i < v.len; i++) {
+        AsciiString *s = AsciiStringVector_get(&v, i);
+
+        printf("%.*s\n", (int)s->len, s->ptr);
+    }
+
+    AsciiStringVector_free(&v);
+
     // AsciiStr_free(&str);
     // Uint8Vector_free(&v);
 
