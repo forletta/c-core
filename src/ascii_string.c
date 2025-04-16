@@ -137,6 +137,31 @@ void AsciiString_free(AsciiString *string) {
     VoidVector_free((void **)&string->ptr, &string->len, &string->cap);
 }
 
+// AsciiStringVector:
+
+AsciiString *AsciiStringVector_get(const AsciiStringVector *v, size_t i) {
+    return array_get(sizeof(AsciiString), v->ptr, v->len, i);
+}
+
+void AsciiStringVector_push(AsciiStringVector *v, AsciiString *str) {
+    VoidVector void_v = {
+        .ptr = v->ptr,
+        .len = v->len,
+        .cap = v->cap,
+        .element_size = sizeof(AsciiString),
+    };
+
+    *(AsciiString *)VoidVector_push(&void_v) = *str;
+}
+
+void AsciiStringVector_free(AsciiStringVector *v) {
+    for (size_t i = 0; i < v->len; i++) {
+        AsciiString_free(AsciiStringVector_get(v, i));
+    }
+
+    VoidVector_free((void **)&v->ptr, &v->len, &v->cap);
+}
+
 // // AsciiString constructors:
 // AsciiString AsciiString_copy(AsciiString *str) {
 //     VoidVector void_vector = VoidVector_copy((VoidVector *)str,
