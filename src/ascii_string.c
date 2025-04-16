@@ -105,26 +105,28 @@ AsciiStr AsciiString_substr(const AsciiString *string, size_t start,
     return AsciiStr_substr(&str, start, end);
 }
 
+VoidVector AsciiString_as_void_vector(AsciiString *string) {
+    VoidVector v = {
+        .ptr = (void **)&string->ptr,
+        .len = &string->len,
+        .cap = &string->cap,
+        .element_size = sizeof(char),
+    };
+
+    return v;
+}
+
 // AsciiString setters:
 
 void AsciiString_push(AsciiString *string, char c) {
-    VoidVector v = {
-        .ptr = string->ptr,
-        .len = string->len,
-        .cap = string->cap,
-        .element_size = sizeof(char),
-    };
+    VoidVector v = AsciiString_as_void_vector(string);
 
-    *(char *)VoidVector_push(&v) = c;
+    char *target = VoidVector_push(&v);
+    *target = c;
 }
 
 void AsciiString_extend_from(AsciiString *string, AsciiStr *str) {
-    VoidVector v = {
-        .ptr = string->ptr,
-        .len = string->len,
-        .cap = string->cap,
-        .element_size = sizeof(char),
-    };
+    VoidVector v = AsciiString_as_void_vector(string);
     VoidArray arr = {
         .ptr = str->ptr,
         .len = str->len,
@@ -134,7 +136,8 @@ void AsciiString_extend_from(AsciiString *string, AsciiStr *str) {
 }
 
 void AsciiString_free(AsciiString *string) {
-    VoidVector_free((void **)&string->ptr, &string->len, &string->cap);
+    VoidVector v = AsciiString_as_void_vector(string);
+    VoidVector_free(&v);
 }
 
 // AsciiStringVector:
@@ -143,13 +146,19 @@ AsciiString *AsciiStringVector_get(const AsciiStringVector *v, size_t i) {
     return array_get(sizeof(AsciiString), v->ptr, v->len, i);
 }
 
-void AsciiStringVector_push(AsciiStringVector *v, AsciiString *str) {
+VoidVector AsciiStringVector_as_void_vector(AsciiStringVector *v) {
     VoidVector void_v = {
-        .ptr = v->ptr,
-        .len = v->len,
-        .cap = v->cap,
+        .ptr = (void **)&v->ptr,
+        .len = &v->len,
+        .cap = &v->cap,
         .element_size = sizeof(AsciiString),
     };
+
+    return void_v;
+}
+
+void AsciiStringVector_push(AsciiStringVector *v, AsciiString *str) {
+    VoidVector void_v = AsciiStringVector_as_void_vector(v);
 
     *(AsciiString *)VoidVector_push(&void_v) = *str;
 }
@@ -159,7 +168,8 @@ void AsciiStringVector_free(AsciiStringVector *v) {
         AsciiString_free(AsciiStringVector_get(v, i));
     }
 
-    VoidVector_free((void **)&v->ptr, &v->len, &v->cap);
+    VoidVector void_v = AsciiStringVector_as_void_vector(v);
+    VoidVector_free(&void_v);
 }
 
 // // AsciiString constructors:

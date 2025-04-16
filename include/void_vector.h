@@ -4,9 +4,9 @@
 #include "void_array.h"
 
 typedef struct {
-    void *ptr;
-    size_t len;
-    size_t cap;
+    void **ptr;
+    size_t *len;
+    size_t *cap;
     size_t element_size;
 } VoidVector;
 
@@ -20,6 +20,6 @@ void *VoidVector_get(VoidVector *v, size_t i);
 void *VoidVector_push(VoidVector *v);
 void VoidVector_extend_from(VoidVector *v, VoidArray *src);
 
-void VoidVector_free(void **ptr, size_t *len, size_t *cap);
+void VoidVector_free(VoidVector *v);
 
 #endif // !VOID_VECTOR_H

@@ -148,6 +148,17 @@ bool test_AsciiString_get() {
     return true;
 }
 
+bool test_AsciiString_push() {
+    AsciiString string = AsciiString_copy_from_cstr("hello");
+
+    AsciiString_push(&string, ' ');
+
+    ASSERT_EQ(strncmp(string.ptr, "hello ", 6), 0);
+    ASSERT_EQ(string.len, 6);
+
+    return true;
+}
+
 int main() {
     static const Test TESTS[] = {
         TEST(test_AsciiStr_copy_from_cstr),
@@ -159,6 +170,7 @@ int main() {
         TEST(test_AsciiString_take_from_cstr),
         TEST(test_AsciiString_copy_from_cstr),
         TEST(test_AsciiString_get),
+        TEST(test_AsciiString_push),
     };
 
     for (size_t i = 0; i < ARRAY_LENGTH(TESTS); i++) {
