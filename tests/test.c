@@ -1,86 +1,170 @@
-// #include "uint8_array.h"
 #include "ascii_string.h"
-#include "io.h"
 #include "uint8_vector.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#define TEST(test_) {.name = #test_, .test = test_}
+#define ARRAY_LENGTH(arr) (sizeof(arr) / sizeof(arr[0]))
+
+#define ASSERT_EQ(rhs, lhs)                                                    \
+    if (rhs != lhs)                                                            \
+        return false;
+#define ASSERT_NE(rhs, lhs)                                                    \
+    if (rhs == lhs)                                                            \
+        return false;
+
+typedef struct {
+    char *name;
+    bool (*test)(void);
+} Test;
+
+bool test_AsciiStr_copy() {
+    AsciiStr str = {
+        .ptr = "hello",
+        .len = 5,
+    };
+
+    AsciiStr new = AsciiStr_copy(&str);
+
+    ASSERT_NE(str.ptr, new.ptr);
+    ASSERT_EQ(str.len, new.len);
+    ASSERT_EQ(strncmp(str.ptr, new.ptr, 5), 0);
+
+    return true;
+}
+
+bool test_AsciiStr_copy_from_cstr() {
+    char *cstr = "hello";
+
+    AsciiStr str = AsciiStr_copy_from_cstr(cstr);
+
+    ASSERT_NE(str.ptr, cstr);
+    ASSERT_EQ(strncmp(str.ptr, cstr, str.len), 0);
+
+    return true;
+}
+
+bool test_AsciiStr_take_from_cstr() {
+    char *cstr = "hello";
+
+    AsciiStr str = AsciiStr_take_from_cstr(cstr);
+
+    ASSERT_EQ(str.ptr, cstr);
+    ASSERT_EQ(strncmp(str.ptr, cstr, 5), 0);
+
+    return true;
+}
+
+bool test_AsciiString_take_from_str() {
+    char *cstr = "hello";
+    char *ptr = malloc(5);
+    strncpy(ptr, cstr, 5);
+
+    AsciiStr str = {
+        .ptr = ptr,
+        .len = 5,
+    };
+
+    AsciiString string = AsciiString_take_from_str(str);
+
+    ASSERT_EQ(str.ptr, string.ptr);
+    ASSERT_EQ(str.len, string.len);
+    ASSERT_EQ(strncmp(str.ptr, string.ptr, 5), 0);
+
+    AsciiString_free(&string);
+
+    return true;
+}
+
+bool test_AsciiStr_get() {
+    AsciiStr str = {
+        .ptr = "hello",
+        .len = 5,
+    };
+
+    ASSERT_EQ(*AsciiStr_get(&str, 0), 'h');
+    ASSERT_EQ(*AsciiStr_get(&str, 1), 'e');
+    ASSERT_EQ(*AsciiStr_get(&str, 4), 'o');
+
+    return true;
+}
+
+bool test_AsciiString_copy_from_str() {
+    AsciiStr str = {
+        .ptr = "hello",
+        .len = 5,
+    };
+
+    AsciiString string = AsciiString_copy_from_str(&str);
+
+    ASSERT_NE(str.ptr, string.ptr);
+    ASSERT_EQ(str.len, string.len);
+    ASSERT_EQ(strncmp(str.ptr, string.ptr, 5), 0);
+
+    return true;
+}
+
+bool test_AsciiString_take_from_cstr() {
+    char *cstr = malloc(5);
+
+    strncpy(cstr, "hello", 5);
+
+    AsciiString string = AsciiString_take_from_cstr(cstr);
+
+    ASSERT_EQ(cstr, string.ptr);
+    ASSERT_EQ(5, string.len);
+    ASSERT_EQ(strncmp(cstr, string.ptr, 5), 0);
+
+    AsciiString_free(&string);
+
+    return true;
+}
+
+bool test_AsciiString_copy_from_cstr() {
+    char *cstr = "hello";
+
+    AsciiString string = AsciiString_copy_from_cstr(cstr);
+
+    ASSERT_NE(cstr, string.ptr);
+    ASSERT_EQ(strlen(cstr), string.len);
+    ASSERT_EQ(strncmp(cstr, string.ptr, 5), 0);
+
+    AsciiString_free(&string);
+
+    return true;
+}
+
+bool test_AsciiString_get() {
+    AsciiString string = AsciiString_copy_from_cstr("hello");
+
+    ASSERT_EQ(*AsciiString_get(&string, 0), 'h');
+    ASSERT_EQ(*AsciiString_get(&string, 1), 'e');
+    ASSERT_EQ(*AsciiString_get(&string, 4), 'o');
+
+    AsciiString_free(&string);
+
+    return true;
+}
+
 int main() {
-    // uint8_t items[4] = {4, 3, 2, 1};
-    // Uint8Array arr = {
-    //     .arr = items,
-    //     .len = 4,
-    // };
-    //
-    // for (size_t i = 0; i < 4; i++) {
-    //     printf("%u\n", *Uint8Array_get(&arr, i));
-    // }
-    //
-    // Uint8Vector v = {};
-    //
-    // Uint8Vector_push(&v, 1);
-    // Uint8Vector_push(&v, 2);
-    // Uint8Vector_push(&v, 3);
-    //
-    // Uint8Vector_extend_from(&v, &arr);
-    //
-    // for (size_t i = 0; i < v.arr.len; i++) {
-    //     printf("%u\n", *Uint8Vector_get(&v, i));
-    // }
+    static const Test TESTS[] = {
+        TEST(test_AsciiStr_copy_from_cstr),
+        TEST(test_AsciiStr_copy),
+        TEST(test_AsciiStr_take_from_cstr),
+        TEST(test_AsciiStr_get),
+        TEST(test_AsciiString_take_from_str),
+        TEST(test_AsciiString_copy_from_str),
+        TEST(test_AsciiString_take_from_cstr),
+        TEST(test_AsciiString_copy_from_cstr),
+        TEST(test_AsciiString_get),
+    };
 
-    AsciiString string = {};
-
-    AsciiString_push(&string, 'h');
-    AsciiString_push(&string, 'e');
-    AsciiString_push(&string, 'l');
-    AsciiString_push(&string, 'l');
-    AsciiString_push(&string, 'o');
-
-    AsciiStr str = AsciiStr_copy_from_cstr(" there");
-
-    AsciiStr substr1 = AsciiStr_substr(&str, 1, 3);
-    printf("%.*s\n", (int)substr1.len, substr1.ptr);
-
-    AsciiStr substr2 = AsciiString_substr(&string, 1, 3);
-    printf("%.*s\n", (int)substr2.len, substr2.ptr);
-
-    AsciiString_extend_from(&string, &str);
-
-    printf("%s\n", string.ptr);
-
-    printf("%c\n", *AsciiString_get(&string, 1));
-    printf("%c\n", *AsciiString_get(&string, 3));
-
-    AsciiString_free(&string);
-
-    io_getline(&string, stdin);
-    printf("%.*s\n", (int)string.len, string.ptr);
-
-    printf("len: %zu\ncap: %zu\n", string.len, string.cap);
-
-    AsciiString_free(&string);
-
-    AsciiStringVector v = {};
-
-    for (size_t i = 0; i < 4; i++) {
-        // AsciiStr str = AsciiStr_copy_from_cstr("heyyy");
-        AsciiString s = AsciiString_copy_from_cstr("heyyy");
-        // AsciiString_extend_from(&s, &str);
-    
-        AsciiStringVector_push(&v, &s);
+    for (size_t i = 0; i < ARRAY_LENGTH(TESTS); i++) {
+        printf("TEST: %s...", TESTS[i].name);
+        printf("%s\n", TESTS[i].test() ? "ok" : "failed");
     }
-
-    for (size_t i = 0; i < v.len; i++) {
-        AsciiString *s = AsciiStringVector_get(&v, i);
-
-        printf("%.*s\n", (int)s->len, s->ptr);
-    }
-
-    AsciiStringVector_free(&v);
-
-    // AsciiStr_free(&str);
-    // Uint8Vector_free(&v);
 
     return 0;
 }

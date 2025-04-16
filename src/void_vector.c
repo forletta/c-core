@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-VoidVector VoidVector_copy(VoidVector *v, size_t element_size) {
+VoidVector VoidVector_copy(VoidVector *v) {
     VoidArray arr = {.ptr = v->ptr, .len = v->len};
-    VoidArray new_arr = VoidArray_copy(&arr, element_size);
+    VoidArray new_arr = VoidArray_copy(&arr, v->element_size);
 
     VoidVector new = {
         .ptr = new_arr.ptr, .len = new_arr.len, .cap = new_arr.len};
@@ -13,18 +13,17 @@ VoidVector VoidVector_copy(VoidVector *v, size_t element_size) {
     return new;
 }
 
-size_t VoidVector_reserve(VoidVector *v, size_t element_size,
-                          size_t additional) {
+size_t VoidVector_reserve(VoidVector *v, size_t additional) {
     if (additional == 0)
         return v->cap;
 
     size_t required_capacity = v->cap + additional;
     uint8_t *ptr;
 
-    if ((ptr = malloc(required_capacity * element_size)) == NULL)
+    if ((ptr = malloc(required_capacity * v->element_size)) == NULL)
         malloc_error();
 
-    memcpy(ptr, v->ptr, v->len * element_size);
+    memcpy(ptr, v->ptr, v->len * v->element_size);
     free(v->ptr);
     v->ptr = ptr;
     v->cap = required_capacity;
@@ -32,33 +31,37 @@ size_t VoidVector_reserve(VoidVector *v, size_t element_size,
     return v->cap;
 }
 
-size_t VoidVector_ensure_capacity(VoidVector *v, size_t element_size,
-                                  size_t additional) {
+size_t VoidVector_ensure_capacity(VoidVector *v, size_t additional) {
     if (v->len < v->cap)
         return 0;
 
-    return VoidVector_reserve(v, element_size, additional);
+    return VoidVector_reserve(v, additional);
 }
 
-void *VoidVector_get(VoidVector *v, size_t element_size, size_t i) {
+void *VoidVector_get(VoidVector *v, size_t i) {
     if (i < v->len)
         return v->ptr + i;
 
     out_of_bounds();
 }
 
-void VoidVector_extend_from(VoidVector *v, size_t element_size,
-                            VoidArray *src) {
-    VoidVector_ensure_capacity(v, element_size, src->len);
+void *VoidVector_push(VoidVector *v) {
+    VoidVector_ensure_capacity(v, 1);
+
+    return v->ptr + v->len++;
+}
+
+void VoidVector_extend_from(VoidVector *v, VoidArray *src) {
+    VoidVector_ensure_capacity(v, src->len);
 
     memcpy(v->ptr + v->len, src->ptr, src->len);
     v->len += src->len;
 }
 
-void VoidVector_free(VoidVector *v) {
-    free(v->ptr);
+void VoidVector_free(void **ptr, size_t *len, size_t *cap) {
+    free(*ptr);
 
-    v->ptr = NULL;
-    v->len = 0;
-    v->cap = 0;
+    *ptr = NULL;
+    *len = 0;
+    *cap = 0;
 }
