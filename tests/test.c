@@ -57,6 +57,44 @@ bool test_AsciiStr_take_from_cstr() {
     return true;
 }
 
+bool test_AsciiStr_get() {
+    AsciiStr str = {
+        .ptr = "hello",
+        .len = 5,
+    };
+
+    ASSERT_EQ(*AsciiStr_get(&str, 0), 'h');
+    ASSERT_EQ(*AsciiStr_get(&str, 1), 'e');
+    ASSERT_EQ(*AsciiStr_get(&str, 4), 'o');
+
+    return true;
+}
+
+bool test_AsciiStr_substr() {
+    AsciiStr str = {
+        .ptr = "hello",
+        .len = 5,
+    };
+
+    AsciiStr substr = AsciiStr_substr(&str, 1, 3);
+    ASSERT_EQ(substr.len, 2);
+    ASSERT_EQ(strncmp(substr.ptr, "el", 2), 0);
+
+    substr = AsciiStr_substr(&str, 0, 2);
+    ASSERT_EQ(substr.len, 2);
+    ASSERT_EQ(strncmp(substr.ptr, "he", 2), 0);
+
+    substr = AsciiStr_substr(&str, 3, 5);
+    ASSERT_EQ(substr.len, 2);
+    ASSERT_EQ(strncmp(substr.ptr, "lo", 2), 0);
+
+    substr = AsciiStr_substr(&str, 0, 5);
+    ASSERT_EQ(substr.len, 5);
+    ASSERT_EQ(strncmp(substr.ptr, "hello", 5), 0);
+
+    return true;
+}
+
 bool test_AsciiString_take_from_str() {
     char *cstr = "hello";
     char *ptr = malloc(5);
@@ -74,19 +112,6 @@ bool test_AsciiString_take_from_str() {
     ASSERT_EQ(strncmp(str.ptr, string.ptr, 5), 0);
 
     AsciiString_free(&string);
-
-    return true;
-}
-
-bool test_AsciiStr_get() {
-    AsciiStr str = {
-        .ptr = "hello",
-        .len = 5,
-    };
-
-    ASSERT_EQ(*AsciiStr_get(&str, 0), 'h');
-    ASSERT_EQ(*AsciiStr_get(&str, 1), 'e');
-    ASSERT_EQ(*AsciiStr_get(&str, 4), 'o');
 
     return true;
 }
@@ -165,6 +190,7 @@ int main() {
         TEST(test_AsciiStr_copy),
         TEST(test_AsciiStr_take_from_cstr),
         TEST(test_AsciiStr_get),
+        TEST(test_AsciiStr_substr),
         TEST(test_AsciiString_take_from_str),
         TEST(test_AsciiString_copy_from_str),
         TEST(test_AsciiString_take_from_cstr),

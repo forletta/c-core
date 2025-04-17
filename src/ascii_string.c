@@ -47,12 +47,8 @@ char *AsciiStr_get(const AsciiStr *str, size_t i) {
 AsciiStr AsciiStr_substr(const AsciiStr *str, size_t start, size_t end) {
     AsciiStr substr;
 
-    if ((substr.ptr =
-             array_get_slice(sizeof(char), str->ptr, str->len, start, end))) {
-        substr.len = 0;
-    } else {
-        substr.len = end - start;
-    }
+    substr.ptr = array_get_slice(sizeof(char), str->ptr, str->len, start, end);
+    substr.len = substr.ptr == NULL ? 0 : end - start;
 
     return substr;
 }
