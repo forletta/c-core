@@ -40,7 +40,7 @@ size_t VoidVector_ensure_capacity(VoidVector *v, size_t additional) {
 
 void *VoidVector_get(VoidVector *v, size_t i) {
     if (i < *v->len)
-        return v->ptr + i;
+        return *v->ptr + i;
 
     out_of_bounds();
 }
