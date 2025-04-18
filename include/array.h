@@ -40,16 +40,15 @@ Array Array_slice(Array *array, size_t element_size, size_t start, size_t end);
         Array array = Array_copy((void *)ptr, sizeof(type), len);              \
         return *(type##Array *)&array;                                         \
     }                                                                          \
+    type *type##Array_get(type##Array *array, size_t i) {                      \
+        return (type *)Array_get((Array *)array, sizeof((array)->ptr[0]), i);  \
+    }                                                                          \
     type##Array type##Array_slice(type##Array *array, size_t start,            \
                                   size_t end) {                                \
         Array slice =                                                          \
             Array_slice((Array *)array, sizeof((array)->ptr[0]), start, end);  \
         return *(type##Array *)&slice;                                         \
     }
-
-#define GET(array, i)                                                          \
-    ((typeof((array)->ptr[0]) *)Array_get((Array *)array,                      \
-                                          sizeof((array)->ptr[0]), i))
 
 // Tests:
 
