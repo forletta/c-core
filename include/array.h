@@ -60,7 +60,10 @@ void *ArrayIter_next(ArrayIter *iter, size_t element_size);
                                   size_t end);                                 \
     bool type##Array_is_slice(type##Array *array);                             \
     void type##Array_reserve(type##Array *array, size_t additional);           \
-    void type##Array_push(type##Array *array, type element);
+    void type##Array_push(type##Array *array, type element);                   \
+    type##ArrayIter type##ArrayIter_create(type##Array *array);                \
+    type *type##ArrayIter_next(type##ArrayIter *iter);                         \
+    type *type##ArrayIter_peek(type##ArrayIter *iter);
 
 #define ARRAY_IMPL(type)                                                       \
     type##Array type##Array_take(type *ptr, size_t len) {                      \
