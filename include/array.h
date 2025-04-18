@@ -19,6 +19,15 @@ Array Array_copy(void *ptr, size_t element_size, size_t len);
 
 void *Array_get(Array *array, size_t element_size, size_t i);
 Array Array_slice(Array *array, size_t element_size, size_t start, size_t end);
+bool Array_is_slice(Array *array);
+
+// Setters:
+
+void Array_reserve(Array *array, size_t element_size, size_t additional);
+void Array_ensure_capacity(Array *array, size_t element_size,
+                           size_t additional);
+void *Array_push(Array *array, size_t element_size);
+// void *Array_extend(Array *array, size_t element_size, const Array *src);
 
 // Macros:
 
@@ -48,6 +57,17 @@ Array Array_slice(Array *array, size_t element_size, size_t start, size_t end);
         Array slice =                                                          \
             Array_slice((Array *)array, sizeof((array)->ptr[0]), start, end);  \
         return *(type##Array *)&slice;                                         \
+    }                                                                          \
+    bool type##Array_is_slice(type##Array *array) {                            \
+        return Array_is_slice((Array *)array);                                 \
+    }                                                                          \
+    void type##Array_reserve(type##Array *array, size_t additional) {          \
+        return Array_reserve((Array *)array, sizeof((array)->ptr[0]),          \
+                             additional);                                      \
+    }                                                                          \
+    void type##Array_push(type##Array *array, type element) {                  \
+        *(type *)Array_push((Array *)array, sizeof((array)->ptr[0])) =         \
+            element;                                                           \
     }
 
 // Tests:
@@ -63,12 +83,14 @@ bool test_Array_take();
 bool test_Array_copy();
 bool test_Array_get();
 bool test_Array_slice();
+bool test_Array_is_slice();
+bool test_Array_reserve();
+bool test_Array_push();
 
 static const Test ARRAY_TEST_GROUP[] = {
-    TEST(test_Array_take),
-    TEST(test_Array_copy),
-    TEST(test_Array_get),
-    TEST(test_Array_slice),
+    TEST(test_Array_take),  TEST(test_Array_copy),     TEST(test_Array_get),
+    TEST(test_Array_slice), TEST(test_Array_is_slice), TEST(test_Array_reserve),
+    TEST(test_Array_push),
 };
 
 #endif // !ARRAY_H

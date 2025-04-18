@@ -12,6 +12,18 @@
 #define ASSERT_NE(rhs, lhs)                                                    \
     if (rhs == lhs)                                                            \
         return false;
+#define ASSERT_LT(rhs, lhs)                                                    \
+    if (rhs >= lhs)                                                            \
+        return false;
+#define ASSERT_GT(rhs, lhs)                                                    \
+    if (rhs <= lhs)                                                            \
+        return false;
+#define ASSERT_LE(rhs, lhs)                                                    \
+    if (rhs > lhs)                                                            \
+        return false;
+#define ASSERT_GE(rhs, lhs)                                                    \
+    if (rhs < lhs)                                                            \
+        return false;
 
 typedef struct {
     const char *name;

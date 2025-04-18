@@ -40,6 +40,46 @@ Array Array_slice(Array *array, size_t element_size, size_t start, size_t end) {
                    .cap = 0};
 }
 
+// Setters:
+
+void Array_reserve(Array *array, size_t element_size, size_t additional) {
+    if (additional == 0)
+        return;
+
+    size_t minimum_capacity =
+        (Array_is_slice(array) ? array->len : array->cap) + additional;
+    size_t amortized_capacity =
+        array->cap * 2 > minimum_capacity ? array->cap * 2 : minimum_capacity;
+    size_t required_size = amortized_capacity * element_size;
+
+    void *ptr;
+
+    if ((ptr = malloc(required_size)) == NULL)
+        malloc_error();
+
+    memcpy(ptr, array->ptr, array->len * element_size);
+
+    if (!Array_is_slice(array))
+        free(array->ptr);
+
+    array->ptr = ptr;
+    array->cap = amortized_capacity;
+}
+
+bool Array_is_slice(Array *array) { return array->cap == 0; }
+
+void Array_ensure_capacity(Array *array, size_t element_size,
+                           size_t additional) {
+    if (Array_is_slice(array) || (array->cap - array->len) < additional)
+        Array_reserve(array, element_size, additional);
+}
+
+void *Array_push(Array *array, size_t element_size) {
+    Array_ensure_capacity(array, element_size, 1);
+
+    return array->ptr + (array->len++ * element_size);
+}
+
 // Tests:
 
 bool test_Array_take() {
@@ -92,6 +132,25 @@ bool test_Array_get() {
     return true;
 }
 
+bool test_Array_is_slice() {
+    ArrayTestType arr[] = {
+        {.x = 1, .y = 2},
+        {.x = 3, .y = 4},
+        {.x = 5, .y = 6},
+    };
+
+    ArrayTestTypeArray array = {};
+    ASSERT_EQ(ArrayTestTypeArray_is_slice(&array), true);
+
+    array = ArrayTestTypeArray_take(arr, 3);
+    ASSERT_EQ(ArrayTestTypeArray_is_slice(&array), true);
+
+    array = ArrayTestTypeArray_copy(arr, 3);
+    ASSERT_EQ(ArrayTestTypeArray_is_slice(&array), false);
+
+    return true;
+}
+
 bool test_Array_slice() {
     ArrayTestType arr[] = {
         {.x = 1, .y = 2},
@@ -123,6 +182,73 @@ bool test_Array_slice() {
     ASSERT_EQ(slice.ptr, NULL);
     ASSERT_EQ(slice.len, 0);
     ASSERT_EQ(slice.cap, 0);
+
+    return true;
+}
+
+bool test_Array_reserve() {
+    ArrayTestType arr[] = {
+        {.x = 1, .y = 2},
+        {.x = 3, .y = 4},
+        {.x = 5, .y = 6},
+    };
+
+    ArrayTestTypeArray array = {};
+    ArrayTestTypeArray_reserve(&array, 0);
+    ASSERT_EQ(array.ptr, NULL);
+    ASSERT_EQ(array.len, 0);
+    ASSERT_EQ(array.cap, 0);
+
+    ArrayTestTypeArray_reserve(&array, 4);
+    ASSERT_GE(array.cap, 4);
+
+    array = ArrayTestTypeArray_take(arr, 3);
+    ArrayTestTypeArray_reserve(&array, 4);
+    ASSERT_GE(array.cap, 7);
+    ASSERT_NE(array.ptr, arr);
+    ASSERT_EQ(array.len, 3);
+    ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
+    ASSERT_EQ(ArrayTestTypeArray_get(&array, 1)->x, 3);
+    ASSERT_EQ(ArrayTestTypeArray_get(&array, 2)->x, 5);
+
+    array = ArrayTestTypeArray_copy(arr, 3);
+    ArrayTestTypeArray_reserve(&array, 4);
+    ASSERT_GE(array.cap, 7);
+    ASSERT_EQ(array.len, 3);
+    ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
+    ASSERT_EQ(ArrayTestTypeArray_get(&array, 1)->x, 3);
+    ASSERT_EQ(ArrayTestTypeArray_get(&array, 2)->x, 5);
+
+    return true;
+}
+
+bool test_Array_push() {
+    ArrayTestType arr[] = {
+        {.x = 1, .y = 2},
+        {.x = 3, .y = 4},
+        {.x = 5, .y = 6},
+    };
+
+    ArrayTestTypeArray array = {};
+
+    ArrayTestTypeArray_push(&array, (ArrayTestType){.x = 1, .y = 2});
+    ASSERT_GE(array.cap, 1);
+    ASSERT_EQ(array.len, 1);
+    ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
+
+    array = (ArrayTestTypeArray){};
+    ArrayTestTypeArray_reserve(&array, 4);
+    ArrayTestTypeArray_push(&array, (ArrayTestType){.x = 1, .y = 2});
+    ASSERT_GE(array.cap, 4);
+    ASSERT_EQ(array.len, 1);
+    ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
+
+    array = ArrayTestTypeArray_take(arr, 3);
+    ArrayTestTypeArray_push(&array, (ArrayTestType){.x = 7, .y = 8});
+    ASSERT_GE(array.cap, 4);
+    ASSERT_EQ(array.len, 4);
+    ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
+    ASSERT_EQ(ArrayTestTypeArray_get(&array, 3)->x, 7);
 
     return true;
 }
