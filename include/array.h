@@ -18,7 +18,7 @@ Array Array_copy(void *ptr, size_t element_size, size_t len);
 // Getters:
 
 void *Array_get(Array *array, size_t element_size, size_t i);
-// void *Array_slice(Array *array, size_t element_size, size_t start, size_t end);
+Array Array_slice(Array *array, size_t element_size, size_t start, size_t end);
 
 // Macros:
 
@@ -39,6 +39,12 @@ void *Array_get(Array *array, size_t element_size, size_t i);
     type##Array type##Array_copy(type *ptr, size_t len) {                      \
         Array array = Array_copy((void *)ptr, sizeof(type), len);              \
         return *(type##Array *)&array;                                         \
+    }                                                                          \
+    type##Array type##Array_slice(type##Array *array, size_t start,            \
+                                  size_t end) {                                \
+        Array slice =                                                          \
+            Array_slice((Array *)array, sizeof((array)->ptr[0]), start, end);  \
+        return *(type##Array *)&slice;                                         \
     }
 
 #define GET(array, i)                                                          \
@@ -57,11 +63,13 @@ ARRAY(ArrayTestType);
 bool test_Array_take();
 bool test_Array_copy();
 bool test_Array_get();
+bool test_Array_slice();
 
 static const Test ARRAY_TEST_GROUP[] = {
     TEST(test_Array_take),
     TEST(test_Array_copy),
     TEST(test_Array_get),
+    TEST(test_Array_slice),
 };
 
 #endif // !ARRAY_H

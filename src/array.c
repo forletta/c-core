@@ -28,6 +28,16 @@ void *Array_get(Array *array, size_t element_size, size_t i) {
     return array->ptr + (i * element_size);
 }
 
+Array Array_slice(Array *array, size_t element_size, size_t start, size_t end) {
+    if (start >= array->len || end > array->len)
+        out_of_bounds();
+
+    if (start >= end)
+        return (Array) {};
+
+    return (Array) {.ptr = Array_get(array, element_size, start), .len = end - start, .cap = 0};
+}
+
 // Tests:
 
 bool test_Array_take() {
@@ -39,7 +49,7 @@ bool test_Array_take() {
 
     ArrayTestTypeArray array = ArrayTestTypeArray_take(arr, 3);
 
-    ASSERT_EQ(arr, array.ptr);
+    ASSERT_EQ(array.ptr, arr);
     ASSERT_EQ(array.len, 3);
     ASSERT_EQ(array.cap, 0);
 
@@ -77,6 +87,41 @@ bool test_Array_get() {
     ASSERT_EQ(GET(&array, 0)->x, 1);
     ASSERT_EQ(GET(&array, 1)->x, 3);
     ASSERT_EQ(GET(&array, 2)->x, 5);
+
+    return true;
+}
+
+bool test_Array_slice() {
+        ArrayTestType arr[] = {
+        {.x = 1, .y = 2},
+        {.x = 3, .y = 4},
+        {.x = 5, .y = 6},
+    };
+    ArrayTestTypeArray array = ArrayTestTypeArray_take(arr, 3);
+
+    ArrayTestTypeArray slice = ArrayTestTypeArray_slice(&array, 0, 3);
+    ASSERT_EQ(slice.len, 3);
+    ASSERT_EQ(slice.cap, 0);
+    ASSERT_EQ(GET(&slice, 0)->x, 1);
+    ASSERT_EQ(GET(&slice, 1)->x, 3);
+    ASSERT_EQ(GET(&slice, 2)->x, 5);
+
+    slice = ArrayTestTypeArray_slice(&array, 0, 2);
+    ASSERT_EQ(slice.len, 2);
+    ASSERT_EQ(slice.cap, 0);
+    ASSERT_EQ(GET(&slice, 0)->x, 1);
+    ASSERT_EQ(GET(&slice, 1)->x, 3);
+
+    slice = ArrayTestTypeArray_slice(&array, 1, 3);
+    ASSERT_EQ(slice.len, 2);
+    ASSERT_EQ(slice.cap, 0);
+    ASSERT_EQ(GET(&slice, 0)->x, 3);
+    ASSERT_EQ(GET(&slice, 1)->x, 5);
+
+    slice = ArrayTestTypeArray_slice(&array, 2, 1);
+    ASSERT_EQ(slice.ptr, NULL);
+    ASSERT_EQ(slice.len, 0);
+    ASSERT_EQ(slice.cap, 0);
 
     return true;
 }
