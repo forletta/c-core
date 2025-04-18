@@ -62,7 +62,7 @@ void *ArrayIter_next(ArrayIter *iter, size_t element_size);
                                   size_t end);                                 \
     bool type##Array_is_slice(type##Array *array);                             \
     void type##Array_reserve(type##Array *array, size_t additional);           \
-    void type##Array_push(type##Array *array, type element);                   \
+    void type##Array_push(type##Array *array, type *element);                  \
     type##ArrayIter type##ArrayIter_create(type##Array *array);                \
     size_t type##ArrayIter_current_index(type##ArrayIter *iter);               \
     type *type##ArrayIter_current(type##ArrayIter *iter);                      \
@@ -94,9 +94,9 @@ void *ArrayIter_next(ArrayIter *iter, size_t element_size);
         return Array_reserve((Array *)array, sizeof((array)->ptr[0]),          \
                              additional);                                      \
     }                                                                          \
-    void type##Array_push(type##Array *array, type element) {                  \
+    void type##Array_push(type##Array *array, type *element) {                 \
         *(type *)Array_push((Array *)array, sizeof((array)->ptr[0])) =         \
-            element;                                                           \
+            *element;                                                          \
     }                                                                          \
     type##ArrayIter type##ArrayIter_create(type##Array *array) {               \
         ArrayIter iter = ArrayIter_create((Array *)array);                     \

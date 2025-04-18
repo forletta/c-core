@@ -262,20 +262,20 @@ bool test_Array_push() {
 
     ArrayTestTypeArray array = {};
 
-    ArrayTestTypeArray_push(&array, (ArrayTestType){.x = 1, .y = 2});
+    ArrayTestTypeArray_push(&array, &(ArrayTestType){.x = 1, .y = 2});
     ASSERT_GE(array.cap, 1);
     ASSERT_EQ(array.len, 1);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
 
     array = (ArrayTestTypeArray){};
     ArrayTestTypeArray_reserve(&array, 4);
-    ArrayTestTypeArray_push(&array, (ArrayTestType){.x = 1, .y = 2});
+    ArrayTestTypeArray_push(&array, &(ArrayTestType){.x = 1, .y = 2});
     ASSERT_GE(array.cap, 4);
     ASSERT_EQ(array.len, 1);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
 
     array = ArrayTestTypeArray_take(arr, 3);
-    ArrayTestTypeArray_push(&array, (ArrayTestType){.x = 7, .y = 8});
+    ArrayTestTypeArray_push(&array, &(ArrayTestType){.x = 7, .y = 8});
     ASSERT_GE(array.cap, 4);
     ASSERT_EQ(array.len, 4);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
