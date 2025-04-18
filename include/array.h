@@ -38,6 +38,8 @@ void *Array_push(Array *array, size_t element_size);
 // ArrayIter:
 
 ArrayIter ArrayIter_create(Array *array);
+size_t ArrayIter_current_index(ArrayIter *iter);
+void *ArrayIter_current(ArrayIter *iter, size_t element_size);
 void *ArrayIter_peek(ArrayIter *iter, size_t element_size);
 void *ArrayIter_next(ArrayIter *iter, size_t element_size);
 
@@ -98,6 +100,13 @@ void *ArrayIter_next(ArrayIter *iter, size_t element_size);
         ArrayIter iter = ArrayIter_create((Array *)array);                     \
         return *(type##ArrayIter *)&iter;                                      \
     }                                                                          \
+    size_t type##ArrayIter_current_index(type##ArrayIter *iter) {              \
+        return ArrayIter_current_index((ArrayIter *)iter);                     \
+    }                                                                          \
+    type *type##ArrayIter_current(type##ArrayIter *iter) {                     \
+        return (type *)ArrayIter_current((ArrayIter *)iter,                    \
+                                         sizeof((iter)->array->ptr[0]));       \
+    }                                                                          \
     type *type##ArrayIter_next(type##ArrayIter *iter) {                        \
         return (type *)ArrayIter_next((ArrayIter *)iter,                       \
                                       sizeof((iter)->array->ptr[0]));          \
@@ -124,15 +133,24 @@ bool test_Array_is_slice();
 bool test_Array_reserve();
 bool test_Array_push();
 bool test_ArrayIter_create();
+bool test_ArrayIter_current_index();
+bool test_ArrayIter_current();
 bool test_ArrayIter_peek();
 bool test_ArrayIter_next();
 
 static const Test ARRAY_TEST_GROUP[] = {
-    TEST(test_Array_take),     TEST(test_Array_copy),
-    TEST(test_Array_get),      TEST(test_Array_slice),
-    TEST(test_Array_is_slice), TEST(test_Array_reserve),
-    TEST(test_Array_push),     TEST(test_ArrayIter_create),
-    TEST(test_ArrayIter_peek), TEST(test_ArrayIter_next),
+    TEST(test_Array_take),
+    TEST(test_Array_copy),
+    TEST(test_Array_get),
+    TEST(test_Array_slice),
+    TEST(test_Array_is_slice),
+    TEST(test_Array_reserve),
+    TEST(test_Array_push),
+    TEST(test_ArrayIter_create),
+    TEST(test_ArrayIter_peek),
+    TEST(test_ArrayIter_next),
+    TEST(test_ArrayIter_current_index),
+    TEST(test_ArrayIter_current),
 };
 
 #endif // !ARRAY_H

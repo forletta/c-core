@@ -86,6 +86,17 @@ ArrayIter ArrayIter_create(Array *array) {
     return (ArrayIter){.array = array, .cursor = 0};
 }
 
+size_t ArrayIter_current_index(ArrayIter *iter) {
+    if (iter->cursor == 0)
+        out_of_bounds();
+
+    return iter->cursor - 1;
+}
+
+void *ArrayIter_current(ArrayIter *iter, size_t element_size) {
+    return Array_get(iter->array, element_size, ArrayIter_current_index(iter));
+}
+
 void *ArrayIter_peek(ArrayIter *iter, size_t element_size) {
     if (iter->cursor >= iter->array->len)
         return NULL;
@@ -286,6 +297,48 @@ bool test_ArrayIter_create() {
 
     ASSERT_EQ(iter.cursor, 0);
     ASSERT_EQ(iter.array->ptr, array.ptr);
+
+    return true;
+}
+
+bool test_ArrayIter_current_index() {
+    ArrayTestType arr[] = {
+        {.x = 1, .y = 2},
+        {.x = 3, .y = 4},
+        {.x = 5, .y = 6},
+    };
+
+    ArrayTestTypeArray array = ArrayTestTypeArray_take(arr, 3);
+
+    ArrayTestTypeArrayIter iter = ArrayTestTypeArrayIter_create(&array);
+
+    ArrayTestTypeArrayIter_next(&iter);
+    ASSERT_EQ(ArrayTestTypeArrayIter_current_index(&iter), 0);
+    ArrayTestTypeArrayIter_next(&iter);
+    ASSERT_EQ(ArrayTestTypeArrayIter_current_index(&iter), 1);
+    ArrayTestTypeArrayIter_next(&iter);
+    ASSERT_EQ(ArrayTestTypeArrayIter_current_index(&iter), 2);
+
+    return true;
+}
+
+bool test_ArrayIter_current() {
+    ArrayTestType arr[] = {
+        {.x = 1, .y = 2},
+        {.x = 3, .y = 4},
+        {.x = 5, .y = 6},
+    };
+
+    ArrayTestTypeArray array = ArrayTestTypeArray_take(arr, 3);
+
+    ArrayTestTypeArrayIter iter = ArrayTestTypeArrayIter_create(&array);
+
+    ArrayTestTypeArrayIter_next(&iter);
+    ASSERT_EQ(ArrayTestTypeArrayIter_current(&iter)->x, 1);
+    ArrayTestTypeArrayIter_next(&iter);
+    ASSERT_EQ(ArrayTestTypeArrayIter_current(&iter)->x, 3);
+    ArrayTestTypeArrayIter_next(&iter);
+    ASSERT_EQ(ArrayTestTypeArrayIter_current(&iter)->x, 5);
 
     return true;
 }
