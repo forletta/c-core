@@ -38,7 +38,13 @@ void *Array_push(Array *array, size_t element_size);
         size_t cap;                                                            \
     } type##Array;                                                             \
     type##Array type##Array_take(type *ptr, size_t len);                       \
-    type##Array type##Array_copy(type *ptr, size_t len);
+    type##Array type##Array_copy(type *ptr, size_t len);                       \
+    type *type##Array_get(type##Array *array, size_t i);                       \
+    type##Array type##Array_slice(type##Array *array, size_t start,            \
+                                  size_t end);                                 \
+    bool type##Array_is_slice(type##Array *array);                             \
+    void type##Array_reserve(type##Array *array, size_t additional);           \
+    void type##Array_push(type##Array *array, type element);
 
 #define ARRAY_IMPL(type)                                                       \
     type##Array type##Array_take(type *ptr, size_t len) {                      \
