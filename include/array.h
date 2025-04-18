@@ -10,6 +10,12 @@ typedef struct {
     size_t cap;
 } Array;
 
+typedef struct {
+    Array *array;
+    size_t cursor;
+} ArrayIter;
+
+// Array:
 // Constructors:
 
 Array Array_take(void *ptr, size_t len);
@@ -29,6 +35,12 @@ void Array_ensure_capacity(Array *array, size_t element_size,
 void *Array_push(Array *array, size_t element_size);
 // void *Array_extend(Array *array, size_t element_size, const Array *src);
 
+// ArrayIter:
+
+ArrayIter ArrayIter_create(Array *array);
+void *ArrayIter_peek(ArrayIter *iter, size_t element_size);
+void *ArrayIter_next(ArrayIter *iter, size_t element_size);
+
 // Macros:
 
 #define ARRAY(type)                                                            \
@@ -37,6 +49,10 @@ void *Array_push(Array *array, size_t element_size);
         size_t len;                                                            \
         size_t cap;                                                            \
     } type##Array;                                                             \
+    typedef struct {                                                           \
+        type##Array *array;                                                    \
+        size_t cursor;                                                         \
+    } type##ArrayIter;                                                         \
     type##Array type##Array_take(type *ptr, size_t len);                       \
     type##Array type##Array_copy(type *ptr, size_t len);                       \
     type *type##Array_get(type##Array *array, size_t i);                       \
@@ -74,6 +90,18 @@ void *Array_push(Array *array, size_t element_size);
     void type##Array_push(type##Array *array, type element) {                  \
         *(type *)Array_push((Array *)array, sizeof((array)->ptr[0])) =         \
             element;                                                           \
+    }                                                                          \
+    type##ArrayIter type##ArrayIter_create(type##Array *array) {               \
+        ArrayIter iter = ArrayIter_create((Array *)array);                     \
+        return *(type##ArrayIter *)&iter;                                      \
+    }                                                                          \
+    type *type##ArrayIter_next(type##ArrayIter *iter) {                        \
+        return (type *)ArrayIter_next((ArrayIter *)iter,                       \
+                                      sizeof((iter)->array->ptr[0]));          \
+    }                                                                          \
+    type *type##ArrayIter_peek(type##ArrayIter *iter) {                        \
+        return (type *)ArrayIter_peek((ArrayIter *)iter,                       \
+                                      sizeof((iter)->array->ptr[0]));          \
     }
 
 // Tests:
@@ -92,11 +120,16 @@ bool test_Array_slice();
 bool test_Array_is_slice();
 bool test_Array_reserve();
 bool test_Array_push();
+bool test_ArrayIter_create();
+bool test_ArrayIter_peek();
+bool test_ArrayIter_next();
 
 static const Test ARRAY_TEST_GROUP[] = {
-    TEST(test_Array_take),  TEST(test_Array_copy),     TEST(test_Array_get),
-    TEST(test_Array_slice), TEST(test_Array_is_slice), TEST(test_Array_reserve),
-    TEST(test_Array_push),
+    TEST(test_Array_take),     TEST(test_Array_copy),
+    TEST(test_Array_get),      TEST(test_Array_slice),
+    TEST(test_Array_is_slice), TEST(test_Array_reserve),
+    TEST(test_Array_push),     TEST(test_ArrayIter_create),
+    TEST(test_ArrayIter_peek), TEST(test_ArrayIter_next),
 };
 
 #endif // !ARRAY_H

@@ -80,6 +80,26 @@ void *Array_push(Array *array, size_t element_size) {
     return array->ptr + (array->len++ * element_size);
 }
 
+// ArrayIter:
+
+ArrayIter ArrayIter_create(Array *array) {
+    return (ArrayIter){.array = array, .cursor = 0};
+}
+
+void *ArrayIter_peek(ArrayIter *iter, size_t element_size) {
+    if (iter->cursor >= iter->array->len)
+        return NULL;
+
+    return Array_get(iter->array, element_size, iter->cursor);
+}
+
+void *ArrayIter_next(ArrayIter *iter, size_t element_size) {
+    if (iter->cursor >= iter->array->len)
+        return NULL;
+
+    return Array_get(iter->array, element_size, iter->cursor++);
+}
+
 // Tests:
 
 bool test_Array_take() {
@@ -249,6 +269,61 @@ bool test_Array_push() {
     ASSERT_EQ(array.len, 4);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 3)->x, 7);
+
+    return true;
+}
+
+bool test_ArrayIter_create() {
+    ArrayTestType arr[] = {
+        {.x = 1, .y = 2},
+        {.x = 3, .y = 4},
+        {.x = 5, .y = 6},
+    };
+
+    ArrayTestTypeArray array = ArrayTestTypeArray_take(arr, 3);
+
+    ArrayTestTypeArrayIter iter = ArrayTestTypeArrayIter_create(&array);
+
+    ASSERT_EQ(iter.cursor, 0);
+    ASSERT_EQ(iter.array->ptr, array.ptr);
+
+    return true;
+}
+
+bool test_ArrayIter_peek() {
+    ArrayTestType arr[] = {
+        {.x = 1, .y = 2},
+        {.x = 3, .y = 4},
+        {.x = 5, .y = 6},
+    };
+
+    ArrayTestTypeArray array = ArrayTestTypeArray_take(arr, 3);
+
+    ArrayTestTypeArrayIter iter = ArrayTestTypeArrayIter_create(&array);
+
+    ASSERT_EQ(ArrayTestTypeArrayIter_peek(&iter)->x, 1);
+    ArrayTestTypeArrayIter_next(&iter);
+    ASSERT_EQ(ArrayTestTypeArrayIter_peek(&iter)->x, 3);
+    ArrayTestTypeArrayIter_next(&iter);
+    ASSERT_EQ(ArrayTestTypeArrayIter_peek(&iter)->x, 5);
+
+    return true;
+}
+
+bool test_ArrayIter_next() {
+    ArrayTestType arr[] = {
+        {.x = 1, .y = 2},
+        {.x = 3, .y = 4},
+        {.x = 5, .y = 6},
+    };
+
+    ArrayTestTypeArray array = ArrayTestTypeArray_take(arr, 3);
+
+    ArrayTestTypeArrayIter iter = ArrayTestTypeArrayIter_create(&array);
+
+    ASSERT_EQ(ArrayTestTypeArrayIter_next(&iter)->x, 1);
+    ASSERT_EQ(ArrayTestTypeArrayIter_next(&iter)->x, 3);
+    ASSERT_EQ(ArrayTestTypeArrayIter_next(&iter)->x, 5);
 
     return true;
 }
