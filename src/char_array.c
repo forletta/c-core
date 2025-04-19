@@ -2,7 +2,8 @@
 #include <stdlib.h>
 
 void charArray_free(charArray *str) {
-    free(str->ptr);
+    if (str->cap != 0)
+        free(str->ptr);
 
     str->ptr = NULL;
     str->len = 0;
