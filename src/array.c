@@ -8,11 +8,11 @@ ARRAY_IMPL(ArrayTestType);
 
 // Constructors:
 
-Array Array_take(void *ptr, size_t len) {
+Array Array_take_ptr(void *ptr, size_t len) {
     return (Array){.ptr = ptr, .len = len, .cap = 0};
 }
 
-Array Array_copy(void *ptr, size_t element_size, size_t len) {
+Array Array_copy_ptr(void *ptr, size_t element_size, size_t len) {
     void *new = malloc(len * element_size);
     memcpy(new, ptr, len * element_size);
 
@@ -113,14 +113,14 @@ void *ArrayIter_next(ArrayIter *iter, size_t element_size) {
 
 // Tests:
 
-bool test_Array_take() {
+bool test_Array_take_ptr() {
     ArrayTestType arr[] = {
         {.x = 1, .y = 2},
         {.x = 3, .y = 4},
         {.x = 5, .y = 6},
     };
 
-    ArrayTestTypeArray array = ArrayTestTypeArray_take(arr, 3);
+    ArrayTestTypeArray array = ArrayTestTypeArray_take_ptr(arr, 3);
 
     ASSERT_EQ(array.ptr, arr);
     ASSERT_EQ(array.len, 3);
@@ -129,14 +129,14 @@ bool test_Array_take() {
     return true;
 }
 
-bool test_Array_copy() {
+bool test_Array_copy_ptr() {
     ArrayTestType arr[] = {
         {.x = 1, .y = 2},
         {.x = 3, .y = 4},
         {.x = 5, .y = 6},
     };
 
-    ArrayTestTypeArray array = ArrayTestTypeArray_copy(arr, 3);
+    ArrayTestTypeArray array = ArrayTestTypeArray_copy_ptr(arr, 3);
 
     ASSERT_NE(arr, array.ptr);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
@@ -154,7 +154,7 @@ bool test_Array_get() {
         {.x = 3, .y = 4},
         {.x = 5, .y = 6},
     };
-    ArrayTestTypeArray array = ArrayTestTypeArray_take(arr, 3);
+    ArrayTestTypeArray array = ArrayTestTypeArray_take_ptr(arr, 3);
 
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 1)->x, 3);
@@ -173,10 +173,10 @@ bool test_Array_is_slice() {
     ArrayTestTypeArray array = {};
     ASSERT_EQ(ArrayTestTypeArray_is_slice(&array), true);
 
-    array = ArrayTestTypeArray_take(arr, 3);
+    array = ArrayTestTypeArray_take_ptr(arr, 3);
     ASSERT_EQ(ArrayTestTypeArray_is_slice(&array), true);
 
-    array = ArrayTestTypeArray_copy(arr, 3);
+    array = ArrayTestTypeArray_copy_ptr(arr, 3);
     ASSERT_EQ(ArrayTestTypeArray_is_slice(&array), false);
 
     return true;
@@ -188,7 +188,7 @@ bool test_Array_slice() {
         {.x = 3, .y = 4},
         {.x = 5, .y = 6},
     };
-    ArrayTestTypeArray array = ArrayTestTypeArray_take(arr, 3);
+    ArrayTestTypeArray array = ArrayTestTypeArray_take_ptr(arr, 3);
 
     ArrayTestTypeArray slice = ArrayTestTypeArray_slice(&array, 0, 3);
     ASSERT_EQ(slice.len, 3);
@@ -233,7 +233,7 @@ bool test_Array_reserve() {
     ArrayTestTypeArray_reserve(&array, 4);
     ASSERT_GE(array.cap, 4);
 
-    array = ArrayTestTypeArray_take(arr, 3);
+    array = ArrayTestTypeArray_take_ptr(arr, 3);
     ArrayTestTypeArray_reserve(&array, 4);
     ASSERT_GE(array.cap, 7);
     ASSERT_NE(array.ptr, arr);
@@ -242,7 +242,7 @@ bool test_Array_reserve() {
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 1)->x, 3);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 2)->x, 5);
 
-    array = ArrayTestTypeArray_copy(arr, 3);
+    array = ArrayTestTypeArray_copy_ptr(arr, 3);
     ArrayTestTypeArray_reserve(&array, 4);
     ASSERT_GE(array.cap, 7);
     ASSERT_EQ(array.len, 3);
@@ -274,7 +274,7 @@ bool test_Array_push() {
     ASSERT_EQ(array.len, 1);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
 
-    array = ArrayTestTypeArray_take(arr, 3);
+    array = ArrayTestTypeArray_take_ptr(arr, 3);
     ArrayTestTypeArray_push(&array, &(ArrayTestType){.x = 7, .y = 8});
     ASSERT_GE(array.cap, 4);
     ASSERT_EQ(array.len, 4);
@@ -291,7 +291,7 @@ bool test_ArrayIter_create() {
         {.x = 5, .y = 6},
     };
 
-    ArrayTestTypeArray array = ArrayTestTypeArray_take(arr, 3);
+    ArrayTestTypeArray array = ArrayTestTypeArray_take_ptr(arr, 3);
 
     ArrayTestTypeArrayIter iter = ArrayTestTypeArrayIter_create(&array);
 
@@ -308,7 +308,7 @@ bool test_ArrayIter_current_index() {
         {.x = 5, .y = 6},
     };
 
-    ArrayTestTypeArray array = ArrayTestTypeArray_take(arr, 3);
+    ArrayTestTypeArray array = ArrayTestTypeArray_take_ptr(arr, 3);
 
     ArrayTestTypeArrayIter iter = ArrayTestTypeArrayIter_create(&array);
 
@@ -329,7 +329,7 @@ bool test_ArrayIter_current() {
         {.x = 5, .y = 6},
     };
 
-    ArrayTestTypeArray array = ArrayTestTypeArray_take(arr, 3);
+    ArrayTestTypeArray array = ArrayTestTypeArray_take_ptr(arr, 3);
 
     ArrayTestTypeArrayIter iter = ArrayTestTypeArrayIter_create(&array);
 
@@ -350,7 +350,7 @@ bool test_ArrayIter_peek() {
         {.x = 5, .y = 6},
     };
 
-    ArrayTestTypeArray array = ArrayTestTypeArray_take(arr, 3);
+    ArrayTestTypeArray array = ArrayTestTypeArray_take_ptr(arr, 3);
 
     ArrayTestTypeArrayIter iter = ArrayTestTypeArrayIter_create(&array);
 
@@ -370,7 +370,7 @@ bool test_ArrayIter_next() {
         {.x = 5, .y = 6},
     };
 
-    ArrayTestTypeArray array = ArrayTestTypeArray_take(arr, 3);
+    ArrayTestTypeArray array = ArrayTestTypeArray_take_ptr(arr, 3);
 
     ArrayTestTypeArrayIter iter = ArrayTestTypeArrayIter_create(&array);
 

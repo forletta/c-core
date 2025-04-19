@@ -18,8 +18,8 @@ typedef struct {
 // Array:
 // Constructors:
 
-Array Array_take(void *ptr, size_t len);
-Array Array_copy(void *ptr, size_t element_size, size_t len);
+Array Array_take_ptr(void *ptr, size_t len);
+Array Array_copy_ptr(void *ptr, size_t element_size, size_t len);
 
 // Getters:
 
@@ -55,8 +55,8 @@ void *ArrayIter_next(ArrayIter *iter, size_t element_size);
         type##Array *array;                                                    \
         size_t cursor;                                                         \
     } type##ArrayIter;                                                         \
-    type##Array type##Array_take(type *ptr, size_t len);                       \
-    type##Array type##Array_copy(type *ptr, size_t len);                       \
+    type##Array type##Array_take_ptr(type *ptr, size_t len);                   \
+    type##Array type##Array_copy_ptr(type *ptr, size_t len);                   \
     type *type##Array_get(type##Array *array, size_t i);                       \
     type##Array type##Array_slice(type##Array *array, size_t start,            \
                                   size_t end);                                 \
@@ -70,12 +70,12 @@ void *ArrayIter_next(ArrayIter *iter, size_t element_size);
     type *type##ArrayIter_peek(type##ArrayIter *iter);
 
 #define ARRAY_IMPL(type)                                                       \
-    type##Array type##Array_take(type *ptr, size_t len) {                      \
-        Array array = Array_take((void *)ptr, len);                            \
+    type##Array type##Array_take_ptr(type *ptr, size_t len) {                  \
+        Array array = Array_take_ptr((void *)ptr, len);                        \
         return *(type##Array *)&array;                                         \
     }                                                                          \
-    type##Array type##Array_copy(type *ptr, size_t len) {                      \
-        Array array = Array_copy((void *)ptr, sizeof(type), len);              \
+    type##Array type##Array_copy_ptr(type *ptr, size_t len) {                  \
+        Array array = Array_copy_ptr((void *)ptr, sizeof(type), len);          \
         return *(type##Array *)&array;                                         \
     }                                                                          \
     type *type##Array_get(type##Array *array, size_t i) {                      \
@@ -127,8 +127,8 @@ typedef struct {
 
 ARRAY(ArrayTestType);
 
-bool test_Array_take();
-bool test_Array_copy();
+bool test_Array_take_ptr();
+bool test_Array_copy_ptr();
 bool test_Array_get();
 bool test_Array_slice();
 bool test_Array_is_slice();
@@ -141,8 +141,8 @@ bool test_ArrayIter_peek();
 bool test_ArrayIter_next();
 
 static const Test ARRAY_TEST_GROUP[] = {
-    TEST(test_Array_take),
-    TEST(test_Array_copy),
+    TEST(test_Array_take_ptr),
+    TEST(test_Array_copy_ptr),
     TEST(test_Array_get),
     TEST(test_Array_slice),
     TEST(test_Array_is_slice),
