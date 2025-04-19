@@ -69,11 +69,15 @@ void *ArrayIter_next(ArrayIter *iter, size_t element_size);
     bool type##Array_is_slice(type##Array *array);                             \
     void type##Array_reserve(type##Array *array, size_t additional);           \
     void type##Array_push(type##Array *array, type *element);                  \
+    void type##Array_free(type##Array *array);                                 \
     type##ArrayIter type##ArrayIter_create(type##Array *array);                \
     size_t type##ArrayIter_current_index(type##ArrayIter *iter);               \
     type *type##ArrayIter_current(type##ArrayIter *iter);                      \
     type *type##ArrayIter_next(type##ArrayIter *iter);                         \
-    type *type##ArrayIter_peek(type##ArrayIter *iter);
+    type *type##ArrayIter_peek(type##ArrayIter *iter);                         \
+    static const ExtInterface EXT_##type##Array __attribute__((unused)) = {    \
+        .free = (FreeFunction)type##Array_free,                                \
+    };
 
 #define ARRAY_IMPL(type, ext)                                                  \
     type##Array type##Array_take_ptr(type *ptr, size_t len) {                  \

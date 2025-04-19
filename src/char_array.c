@@ -2,4 +2,4 @@
 #include "ext.h"
 #include <stdlib.h>
 
-ARRAY_IMPL(char, NULL_EXT);
+ARRAY_IMPL(char, EXT_NULL);

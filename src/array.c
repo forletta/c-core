@@ -12,7 +12,7 @@
 //
 // static const ExtInterface PRINT_EXT = {.free = (FreeFunction)print_free};
 
-ARRAY_IMPL(ArrayTestType, NULL_EXT);
+ARRAY_IMPL(ArrayTestType, EXT_NULL);
 
 // Constructors:
 

@@ -7,6 +7,6 @@ typedef struct {
     FreeFunction free;
 } ExtInterface;
 
-static const ExtInterface NULL_EXT = {};
+static const ExtInterface EXT_NULL = {};
 
 #endif // !EXT_H

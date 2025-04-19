@@ -5,6 +5,4 @@
 
 ARRAY(char);
 
-void charArray_free(charArray *str);
-
 #endif // !CHAR_ARRAY_H
