@@ -1,6 +1,7 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
+#include "ext.h"
 #include "test_utils.h"
 #include <stdbool.h>
 #include <stddef.h>
@@ -37,6 +38,8 @@ void Array_ensure_capacity(Array *array, size_t element_size,
 void *Array_push(Array *array, size_t element_size);
 // void *Array_extend(Array *array, size_t element_size, const Array *src);
 
+void Array_free(Array *array, size_t element_size, FreeFunction free_element);
+
 // ArrayIter:
 
 ArrayIter ArrayIter_create(Array *array);
@@ -72,7 +75,7 @@ void *ArrayIter_next(ArrayIter *iter, size_t element_size);
     type *type##ArrayIter_next(type##ArrayIter *iter);                         \
     type *type##ArrayIter_peek(type##ArrayIter *iter);
 
-#define ARRAY_IMPL(type)                                                       \
+#define ARRAY_IMPL(type, ext)                                                  \
     type##Array type##Array_take_ptr(type *ptr, size_t len) {                  \
         Array array = Array_take_ptr((void *)ptr, len);                        \
         return *(type##Array *)&array;                                         \
@@ -104,6 +107,9 @@ void *ArrayIter_next(ArrayIter *iter, size_t element_size);
     void type##Array_push(type##Array *array, type *element) {                 \
         *(type *)Array_push((Array *)array, sizeof((array)->ptr[0])) =         \
             *element;                                                          \
+    }                                                                          \
+    void type##Array_free(type##Array *array) {                                \
+        Array_free((Array *)array, sizeof(type), ext.free);                    \
     }                                                                          \
     type##ArrayIter type##ArrayIter_create(type##Array *array) {               \
         ArrayIter iter = ArrayIter_create((Array *)array);                     \

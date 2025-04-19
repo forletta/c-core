@@ -1,10 +1,18 @@
 #include "array.h"
 #include "c_core_error.h"
+#include "ext.h"
 #include "test_utils.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-ARRAY_IMPL(ArrayTestType);
+// void print_free(ArrayTestType *t) {
+//     printf("{x = %zu, y = %zu}\n", t->x, t->y);
+// }
+//
+// static const ExtInterface PRINT_EXT = {.free = (FreeFunction)print_free};
+
+ARRAY_IMPL(ArrayTestType, NULL_EXT);
 
 // Constructors:
 
@@ -84,6 +92,22 @@ void *Array_push(Array *array, size_t element_size) {
     return array->ptr + (array->len++ * element_size);
 }
 
+void Array_free(Array *array, size_t element_size, FreeFunction free_element) {
+    if (array->cap != 0) {
+        if (free_element != NULL) {
+            for (size_t i = 0; i < array->len; i++) {
+                free_element(Array_get(array, element_size, i));
+            }
+        }
+
+        free(array->ptr);
+    }
+
+    array->ptr = NULL;
+    array->len = 0;
+    array->cap = 0;
+}
+
 // ArrayIter:
 
 ArrayIter ArrayIter_create(Array *array) {
@@ -130,6 +154,8 @@ bool test_Array_take_ptr() {
     ASSERT_EQ(array.len, 3);
     ASSERT_EQ(array.cap, 0);
 
+    ArrayTestTypeArray_free(&array); // Not needed
+
     return true;
 }
 
@@ -148,6 +174,8 @@ bool test_Array_copy_ptr() {
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 2)->x, 5);
     ASSERT_EQ(array.len, 3);
     ASSERT_EQ(array.cap, 3);
+
+    ArrayTestTypeArray_free(&array);
 
     return true;
 }
@@ -169,6 +197,9 @@ bool test_Array_copy() {
     ASSERT_EQ(new.len, 3);
     ASSERT_EQ(new.cap, 3);
 
+    ArrayTestTypeArray_free(&new);
+    ArrayTestTypeArray_free(&array);
+
     return true;
 }
 
@@ -184,6 +215,8 @@ bool test_Array_get() {
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 1)->x, 3);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 2)->x, 5);
 
+    ArrayTestTypeArray_free(&array); // Not needed
+
     return true;
 }
 
@@ -196,12 +229,16 @@ bool test_Array_is_slice() {
 
     ArrayTestTypeArray array = {};
     ASSERT_EQ(ArrayTestTypeArray_is_slice(&array), true);
+    ArrayTestTypeArray_free(&array); // Not needed
 
     array = ArrayTestTypeArray_take_ptr(arr, 3);
     ASSERT_EQ(ArrayTestTypeArray_is_slice(&array), true);
+    ArrayTestTypeArray_free(&array); // Not needed
 
     array = ArrayTestTypeArray_copy_ptr(arr, 3);
     ASSERT_EQ(ArrayTestTypeArray_is_slice(&array), false);
+
+    ArrayTestTypeArray_free(&array);
 
     return true;
 }
@@ -220,23 +257,29 @@ bool test_Array_slice() {
     ASSERT_EQ(ArrayTestTypeArray_get(&slice, 0)->x, 1);
     ASSERT_EQ(ArrayTestTypeArray_get(&slice, 1)->x, 3);
     ASSERT_EQ(ArrayTestTypeArray_get(&slice, 2)->x, 5);
+    ArrayTestTypeArray_free(&slice); // Not needed
 
     slice = ArrayTestTypeArray_slice(&array, 0, 2);
     ASSERT_EQ(slice.len, 2);
     ASSERT_EQ(slice.cap, 0);
     ASSERT_EQ(ArrayTestTypeArray_get(&slice, 0)->x, 1);
     ASSERT_EQ(ArrayTestTypeArray_get(&slice, 1)->x, 3);
+    ArrayTestTypeArray_free(&slice); // Not needed
 
     slice = ArrayTestTypeArray_slice(&array, 1, 3);
     ASSERT_EQ(slice.len, 2);
     ASSERT_EQ(slice.cap, 0);
     ASSERT_EQ(ArrayTestTypeArray_get(&slice, 0)->x, 3);
     ASSERT_EQ(ArrayTestTypeArray_get(&slice, 1)->x, 5);
+    ArrayTestTypeArray_free(&slice); // Not needed
 
     slice = ArrayTestTypeArray_slice(&array, 2, 1);
     ASSERT_EQ(slice.ptr, NULL);
     ASSERT_EQ(slice.len, 0);
     ASSERT_EQ(slice.cap, 0);
+    ArrayTestTypeArray_free(&slice); // Not needed
+
+    ArrayTestTypeArray_free(&array); // Not needed
 
     return true;
 }
@@ -256,6 +299,7 @@ bool test_Array_reserve() {
 
     ArrayTestTypeArray_reserve(&array, 4);
     ASSERT_GE(array.cap, 4);
+    ArrayTestTypeArray_free(&array);
 
     array = ArrayTestTypeArray_take_ptr(arr, 3);
     ArrayTestTypeArray_reserve(&array, 4);
@@ -265,6 +309,7 @@ bool test_Array_reserve() {
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 1)->x, 3);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 2)->x, 5);
+    ArrayTestTypeArray_free(&array); // Not needed
 
     array = ArrayTestTypeArray_copy_ptr(arr, 3);
     ArrayTestTypeArray_reserve(&array, 4);
@@ -273,6 +318,7 @@ bool test_Array_reserve() {
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 1)->x, 3);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 2)->x, 5);
+    ArrayTestTypeArray_free(&array);
 
     return true;
 }
@@ -290,6 +336,7 @@ bool test_Array_push() {
     ASSERT_GE(array.cap, 1);
     ASSERT_EQ(array.len, 1);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
+    ArrayTestTypeArray_free(&array);
 
     array = (ArrayTestTypeArray){};
     ArrayTestTypeArray_reserve(&array, 4);
@@ -297,6 +344,7 @@ bool test_Array_push() {
     ASSERT_GE(array.cap, 4);
     ASSERT_EQ(array.len, 1);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
+    ArrayTestTypeArray_free(&array);
 
     array = ArrayTestTypeArray_take_ptr(arr, 3);
     ArrayTestTypeArray_push(&array, &(ArrayTestType){.x = 7, .y = 8});
@@ -304,6 +352,7 @@ bool test_Array_push() {
     ASSERT_EQ(array.len, 4);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 0)->x, 1);
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 3)->x, 7);
+    ArrayTestTypeArray_free(&array);
 
     return true;
 }
@@ -321,6 +370,8 @@ bool test_ArrayIter_create() {
 
     ASSERT_EQ(iter.cursor, 0);
     ASSERT_EQ(iter.array->ptr, array.ptr);
+
+    ArrayTestTypeArray_free(&array); // Not needed
 
     return true;
 }
@@ -343,6 +394,8 @@ bool test_ArrayIter_current_index() {
     ArrayTestTypeArrayIter_next(&iter);
     ASSERT_EQ(ArrayTestTypeArrayIter_current_index(&iter), 2);
 
+    ArrayTestTypeArray_free(&array); // Not needed
+
     return true;
 }
 
@@ -364,6 +417,8 @@ bool test_ArrayIter_current() {
     ArrayTestTypeArrayIter_next(&iter);
     ASSERT_EQ(ArrayTestTypeArrayIter_current(&iter)->x, 5);
 
+    ArrayTestTypeArray_free(&array); // Not needed
+
     return true;
 }
 
@@ -384,6 +439,8 @@ bool test_ArrayIter_peek() {
     ArrayTestTypeArrayIter_next(&iter);
     ASSERT_EQ(ArrayTestTypeArrayIter_peek(&iter)->x, 5);
 
+    ArrayTestTypeArray_free(&array); // Not needed
+
     return true;
 }
 
@@ -401,6 +458,8 @@ bool test_ArrayIter_next() {
     ASSERT_EQ(ArrayTestTypeArrayIter_next(&iter)->x, 1);
     ASSERT_EQ(ArrayTestTypeArrayIter_next(&iter)->x, 3);
     ASSERT_EQ(ArrayTestTypeArrayIter_next(&iter)->x, 5);
+
+    ArrayTestTypeArray_free(&array); // Not needed
 
     return true;
 }
