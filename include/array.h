@@ -20,6 +20,7 @@ typedef struct {
 
 Array Array_take_ptr(void *ptr, size_t len);
 Array Array_copy_ptr(void *ptr, size_t element_size, size_t len);
+Array Array_copy(Array *array, size_t element_size);
 
 // Getters:
 
@@ -57,6 +58,7 @@ void *ArrayIter_next(ArrayIter *iter, size_t element_size);
     } type##ArrayIter;                                                         \
     type##Array type##Array_take_ptr(type *ptr, size_t len);                   \
     type##Array type##Array_copy_ptr(type *ptr, size_t len);                   \
+    type##Array type##Array_copy(type##Array *array);                          \
     type *type##Array_get(type##Array *array, size_t i);                       \
     type##Array type##Array_slice(type##Array *array, size_t start,            \
                                   size_t end);                                 \
@@ -77,6 +79,10 @@ void *ArrayIter_next(ArrayIter *iter, size_t element_size);
     type##Array type##Array_copy_ptr(type *ptr, size_t len) {                  \
         Array array = Array_copy_ptr((void *)ptr, sizeof(type), len);          \
         return *(type##Array *)&array;                                         \
+    }                                                                          \
+    type##Array type##Array_copy(type##Array *array) {                         \
+        Array new = Array_copy((Array *)array, sizeof(type));                  \
+        return *(type##Array *)&new;                                           \
     }                                                                          \
     type *type##Array_get(type##Array *array, size_t i) {                      \
         return (type *)Array_get((Array *)array, sizeof((array)->ptr[0]), i);  \
@@ -129,6 +135,7 @@ ARRAY(ArrayTestType);
 
 bool test_Array_take_ptr();
 bool test_Array_copy_ptr();
+bool test_Array_copy();
 bool test_Array_get();
 bool test_Array_slice();
 bool test_Array_is_slice();
@@ -141,17 +148,12 @@ bool test_ArrayIter_peek();
 bool test_ArrayIter_next();
 
 static const Test ARRAY_TEST_GROUP[] = {
-    TEST(test_Array_take_ptr),
-    TEST(test_Array_copy_ptr),
-    TEST(test_Array_get),
-    TEST(test_Array_slice),
-    TEST(test_Array_is_slice),
-    TEST(test_Array_reserve),
-    TEST(test_Array_push),
-    TEST(test_ArrayIter_create),
-    TEST(test_ArrayIter_peek),
-    TEST(test_ArrayIter_next),
-    TEST(test_ArrayIter_current_index),
+    TEST(test_Array_take_ptr),    TEST(test_Array_copy_ptr),
+    TEST(test_Array_copy),        TEST(test_Array_get),
+    TEST(test_Array_slice),       TEST(test_Array_is_slice),
+    TEST(test_Array_reserve),     TEST(test_Array_push),
+    TEST(test_ArrayIter_create),  TEST(test_ArrayIter_peek),
+    TEST(test_ArrayIter_next),    TEST(test_ArrayIter_current_index),
     TEST(test_ArrayIter_current),
 };
 

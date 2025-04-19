@@ -19,6 +19,10 @@ Array Array_copy_ptr(void *ptr, size_t element_size, size_t len) {
     return (Array){.ptr = new, .len = len, .cap = len};
 }
 
+Array Array_copy(Array *array, size_t element_size) {
+    return Array_copy_ptr(array->ptr, element_size, array->len);
+}
+
 // Getters:
 
 void *Array_get(Array *array, size_t element_size, size_t i) {
@@ -144,6 +148,26 @@ bool test_Array_copy_ptr() {
     ASSERT_EQ(ArrayTestTypeArray_get(&array, 2)->x, 5);
     ASSERT_EQ(array.len, 3);
     ASSERT_EQ(array.cap, 3);
+
+    return true;
+}
+
+bool test_Array_copy() {
+    ArrayTestType arr[] = {
+        {.x = 1, .y = 2},
+        {.x = 3, .y = 4},
+        {.x = 5, .y = 6},
+    };
+
+    ArrayTestTypeArray array = ArrayTestTypeArray_take_ptr(arr, 3);
+    ArrayTestTypeArray new = ArrayTestTypeArray_copy(&array);
+
+    ASSERT_NE(new.ptr, array.ptr);
+    ASSERT_EQ(ArrayTestTypeArray_get(&new, 0)->x, 1);
+    ASSERT_EQ(ArrayTestTypeArray_get(&new, 1)->x, 3);
+    ASSERT_EQ(ArrayTestTypeArray_get(&new, 2)->x, 5);
+    ASSERT_EQ(new.len, 3);
+    ASSERT_EQ(new.cap, 3);
 
     return true;
 }
