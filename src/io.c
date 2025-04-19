@@ -1,5 +1,4 @@
 #include "io.h"
-#include "ascii_string.h"
 #include <stddef.h>
 
 ssize_t io_getline(charArray *str, FILE *restrict stream) {

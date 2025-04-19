@@ -2,6 +2,7 @@
 #define ARRAY_H
 
 #include "test_utils.h"
+#include <stdbool.h>
 #include <stddef.h>
 
 typedef struct {

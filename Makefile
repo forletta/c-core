@@ -3,7 +3,7 @@ SRC_DIRS := src tests
 INC_DIR := include
 
 CC := clang
-CFLAGS := -std=c23 -g -Wall -Werror
+CFLAGS := -std=c11 -g -Wall -Werror
 
 vpath %.c $(SRC_DIRS)
 
